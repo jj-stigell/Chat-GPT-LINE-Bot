@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Modules
 import express, { Application } from 'express';
 import * as line from '@line/bot-sdk';
@@ -27,7 +28,6 @@ app.use('/api/v1/', router);
 
 
 
-
 app.post('/webhook', line.middleware(middlewareConfig), (req: any, res: any) => {
   console.log('EVENTS:', req.body.events);
 
@@ -53,7 +53,6 @@ async function handleEvent(event: any): Promise<null | line.MessageAPIResponseBa
     text: replyText,
   });
 }
-
 
 
 
