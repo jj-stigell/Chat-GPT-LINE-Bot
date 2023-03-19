@@ -1,0 +1,58 @@
+{
+  "EN": {
+    "languageCode": "en",
+    "subject": "Yomiko - Verify your email address",
+    "header": {
+      "title": "Yomiko - Verify your email address"
+    },
+    "body": {
+      "title": "Verify your email",
+      "welcome": "Welcome",
+      "creationSuccess": "Your new account has been created on Yomiko.",
+      "loginInformation": "Find your login information below:",
+      "email": "Email address:",
+      "completeProcess": "Complete the registration process by confirming the validity of your email address, please click on the button below:",
+      "confirmButton": "Confirm my email",
+      "urlProblem": "If you have problems, you can also paste the following URL into your web browser:",
+      "regards": "Best regards,",
+      "signature": "Yomiko team",
+      "footer": {
+        "expireWarning": "This link will expire in 24 hours. If the link has expired, you can resend the link from",
+        "expireWarningLinkText": "here",
+        "sendOnlyAddress": "This email was sent from a send-only address.",
+        "faqNote": "For more details you can read our",
+        "faqNoteLinkText": "FAQ site",
+        "privacyPolicy": "We take great care in handling our users personal information in order to protect it appropriately. For more information, please see the",
+        "privacyPolicyLinkText": "Privacy Policy"
+      }
+    }
+  },
+  "FI": {
+    "languageCode": "fi",
+    "subject": "Yomiko - Vahvista Sähköpostiosoite",
+    "header": {
+      "title": "Yomiko - Vahvista Sähköpostiosoite"
+    },
+    "body": {
+      "title": "Vahvista Sähköpostiosoite",
+      "welcome": "Tervetuloa",
+      "creationSuccess": "Sinun uusi käyttäjätunnuksesi on luotu Yomiko:on.",
+      "loginInformation": "Alapuolelta löydät sisäänkirjautumistunnuksesi:",
+      "email": "Sähköpostiosoite:",
+      "completeProcess": "Viimeistele rekisteröinti prosessi vahvistamalla sähköpostiosoitteesi painamalla alla olevaa painiketta:",
+      "confirmButton": "Vahvista Sähköpostiosoitteeni",
+      "urlProblem": "Jos sinulla on ongelmia vahvistuslinkin kanssa, voit myös kopioida linkin ja syöttää sen selaimen URL-kenttään:",
+      "regards": "Ystävällisin terveisin,",
+      "signature": "Yomiko-tiimi",
+      "footer": {
+        "expireWarning": "Tämä linkki vanhenee 24 tunnin kuluessa. Jos linkki on vanhentunut, voit tilata uuden linkin",
+        "expireWarningLinkText": "täältä",
+        "sendOnlyAddress": "Tähän sähköpostiosoitteeseen ei voi vastata.",
+        "faqNote": "Lisätietoja saat usein kysytyt kysymykset",
+        "faqNoteLinkText": "osiosta",
+        "privacyPolicy": "Pidämme hyvää huolta käyttäjiemme yksityisyydestä voidaksemme taata niiden turvallisen käsittelyn. Lisätietoja",
+        "privacyPolicyLinkText": "tietosuojaselosteesta"
+      }
+    }
+  }
+}
