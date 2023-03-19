@@ -20,9 +20,11 @@ export const STMP_PASSWORD: string | undefined = process.env.STMP_PASSWORD;
 // DEV
 export const DEV_EMAIL: string = process.env.DEV_EMAIL ?? '';
 
+/*
 if (
   (!ORIGIN_EMAIL || !STMP_HOST || !STMP_PORT || !STMP_USER || !STMP_PASSWORD)
   && NODE_ENV === 'production'
 ) {
   throw new Error('Production required env(s) missing!');
 }
+*/
