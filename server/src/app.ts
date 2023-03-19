@@ -4,7 +4,7 @@
 import express, { Application } from 'express';
 //import * as line from '@line/bot-sdk';
 
-import https from 'https';
+// import https from 'https';
 
 // Project imports
 import { router } from './routes/index';
@@ -25,7 +25,7 @@ const clientConfig: line.ClientConfig = {
 };
 */
 
-const TOKEN: string = process.env.CHANNEL_TOKEN ?? '';
+//const TOKEN: string = process.env.CHANNEL_TOKEN ?? '';
 
 
 app.use(express.json());
@@ -37,9 +37,7 @@ app.use('/api/v1/', router);
 
 
 
-app.post('/health', (req: any, res: any) => {
-  res.statusCode(200);
-});
+
 
 
 
@@ -73,7 +71,7 @@ async function handleEvent(event: any): Promise<null | line.MessageAPIResponseBa
 
 
 
-
+/*
 app.post('/webhook', function (req: any, res: any) {
   res.send('HTTP POST request sent to the webhook URL!');
   // If the user sends a message to your bot, send a reply message
@@ -126,18 +124,6 @@ app.post('/webhook', function (req: any, res: any) {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+*/
 
 app.use(errorHandler);
