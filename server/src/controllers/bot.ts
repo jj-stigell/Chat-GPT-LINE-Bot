@@ -100,11 +100,13 @@ export async function line(req: Request, res: Response): Promise<void> {
       messages: [
         {
           'type': 'text',
-          'text': 'Hello, user'
+          'text': req.body?.events[0]?.source?.userId ?
+            `Hi user ${req.body?.events[0]?.source?.userId}` : 'Hi, here is the answer:'
         },
         {
           'type': 'text',
-          'text': 'May I help you?'
+          'text': req.body?.events[0]?.message?.text ?
+            await openAI(req.body.events[0].message.text) : 'I could not parse your message'
         }
       ]
     });
@@ -143,3 +145,29 @@ export async function line(req: Request, res: Response): Promise<void> {
 
 
 }
+
+
+/*
+Mar 20 01:23:29 PM  EVENTS [
+Mar 20 01:23:29 PM    {
+Mar 20 01:23:29 PM      type: 'message',
+Mar 20 01:23:29 PM      message: { type: 'text', id: '17833171084297', text: 'Gkk' },
+Mar 20 01:23:29 PM      webhookEventId: '01GVYM42CMA202VK0NE5091EYF',
+Mar 20 01:23:29 PM      deliveryContext: { isRedelivery: false },
+Mar 20 01:23:29 PM      timestamp: 1679286208641,
+Mar 20 01:23:29 PM      source: { type: 'user', userId: 'U565da51f2cb7af446e73c87840e59ec3' },
+Mar 20 01:23:29 PM      replyToken: '201ad4fa9ce940588b8b07c52a6783a4',
+Mar 20 01:23:29 PM      mode: 'active'
+Mar 20 01:23:29 PM    }
+Mar 20 01:23:29 PM  ]
+Mar 20 01:23:29 PM  EVENTS 0 {
+Mar 20 01:23:29 PM    type: 'message',
+Mar 20 01:23:29 PM    message: { type: 'text', id: '17833171084297', text: 'Gkk' },
+Mar 20 01:23:29 PM    webhookEventId: '01GVYM42CMA202VK0NE5091EYF',
+Mar 20 01:23:29 PM    deliveryContext: { isRedelivery: false },
+Mar 20 01:23:29 PM    timestamp: 1679286208641,
+Mar 20 01:23:29 PM    source: { type: 'user', userId: 'U565da51f2cb7af446e73c87840e59ec3' },
+Mar 20 01:23:29 PM    replyToken: '201ad4fa9ce940588b8b07c52a6783a4',
+Mar 20 01:23:29 PM    mode: 'active'
+Mar 20 01:23:29 PM  }
+*/
