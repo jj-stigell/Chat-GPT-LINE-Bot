@@ -12,7 +12,7 @@ import {
 } from './environment';
 import { openAI } from './openAI';
 
-export const app: Application = express();
+const app: Application = express();
 
 app.use(express.urlencoded({
   extended: true
@@ -49,7 +49,7 @@ const middlewareConfig: MiddlewareConfig = {
 
 const clientConfig: ClientConfig = {
   channelAccessToken: LINE_CHANNEL_ACCESS_TOKEN,
-  channelSecret: LINE_CHANNEL_SECRET,
+  channelSecret: LINE_CHANNEL_SECRET
 };
 
 const client: Client = new Client(clientConfig);
@@ -60,11 +60,11 @@ async function handleTextEvent(event: WebhookEvent): Promise<MessageAPIResponseB
   }
 
   const replyToken: string = event.replyToken;
-  const text: string = await openAI(event.message.text);
+  const text: string = await openAI(event.message.text.substring(3));
 
   const response: TextMessage = {
     type: 'text',
-    text,
+    text
   };
 
   return client.replyMessage(replyToken, response);
@@ -80,7 +80,7 @@ app.post(
     console.log('LINE events:', events);
 
     // Process all of the received events asynchronously.
-    const results: any = await Promise.all(
+    await Promise.all(
       events.map(async (event: WebhookEvent) => {
         try {
 
@@ -103,7 +103,7 @@ app.post(
 
           // Return an error message.
           return res.status(500).json({
-            status: 'error',
+            status: 'error'
           });
         }
       })
@@ -111,8 +111,7 @@ app.post(
 
     // Return a successfull message.
     return res.status(200).json({
-      status: 'success',
-      results,
+      status: 'success'
     });
   });
 
