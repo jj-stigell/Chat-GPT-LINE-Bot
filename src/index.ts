@@ -22,21 +22,21 @@ app.get('/health', (_req: Request, res: Response): Response => {
   return res.status(200).send();
 });
 
-app.post('/ask', async (req: Request, res: Response): Promise<void> => {
+app.post('/ask', async (req: Request, res: Response): Promise<Response> => {
   const requestSchema: yup.AnyObject = yup.object({
     question: yup
       .string()
       .required('question required')
   });
 
-  await requestSchema.validate(req.body, { abortEarly: false }).then();
+  await requestSchema.validate(req.body, { abortEarly: false });
   const question: string = req.body.question;
 
   const answer: string = await openAI(question);
 
   console.log(answer);
 
-  res.status(200).send({
+  return res.status(200).send({
     data: answer
   });
 });
@@ -67,7 +67,7 @@ async function handleTextEvent(event: WebhookEvent): Promise<MessageAPIResponseB
     text
   };
 
-  return client.replyMessage(replyToken, response);
+  return await client.replyMessage(replyToken, response);
 }
 
 app.post(
@@ -113,9 +113,8 @@ app.post(
     return res.status(200).json({
       status: 'success'
     });
-  });
-
-
+  }
+);
 
 app.use(express.json());
 
