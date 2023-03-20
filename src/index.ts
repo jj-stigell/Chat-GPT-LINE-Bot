@@ -5,7 +5,7 @@ import * as yup from 'yup';
 
 // Project imports
 import { PORT, LINE_CHANNEL_TOKEN,  } from './environment';
-import { openAI } from './openAi';
+import { openAI } from './openAI';
 
 
 
