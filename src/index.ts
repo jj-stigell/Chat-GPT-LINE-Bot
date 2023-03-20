@@ -1,4 +1,8 @@
 // Modules
+import {
+  Client, ClientConfig, MessageAPIResponseBase,
+  middleware, MiddlewareConfig, TextMessage, WebhookEvent
+} from '@line/bot-sdk';
 import express, { Application, Request, Response } from 'express';
 import https from 'https';
 import * as yup from 'yup';
@@ -10,29 +14,17 @@ import {
 import { openAI } from './openAI';
 import { LineEvent } from './types';
 
-
-
-//const middleware = require('@line/bot-sdk').middleware
-
-import {
-  Client, ClientConfig, MessageAPIResponseBase,
-  middleware, MiddlewareConfig, TextMessage, WebhookEvent
-} from '@line/bot-sdk';
-
 export const app: Application = express();
-
-
 
 app.use(express.urlencoded({
   extended: true
 }));
 
-
-
-
 app.get('/health', (_req: Request, res: Response): Response => {
   return res.status(200).send();
 });
+
+
 
 
 
@@ -103,6 +95,9 @@ app.post('/webhook/v2', async (req: Request, res: Response): Promise<void> => {
   }
 
 });
+
+
+
 
 
 

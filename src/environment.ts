@@ -6,10 +6,18 @@ export const LINE_CHANNEL_ACCESS_TOKEN: string = process.env.LINE_CHANNEL_ACCESS
 export const LINE_CHANNEL_SECRET: string = process.env.LINE_CHANNEL_SECRET ?? '';
 export const OPENAI_API_KEY: string | undefined = process.env.OPENAI_API_KEY;
 
-if (
-  LINE_CHANNEL_ACCESS_TOKEN.length === 0 ||
-  !OPENAI_API_KEY ||
-  LINE_CHANNEL_SECRET.length === 0 ||
-  !PORT) {
-  throw new Error('Production required env(s) missing or invalid!');
+if (LINE_CHANNEL_ACCESS_TOKEN.length === 0) {
+  throw new Error('LINE_CHANNEL_ACCESS_TOKEN env missing or invalid!');
+}
+
+if (!OPENAI_API_KEY) {
+  throw new Error('OPENAI_API_KEY env missing or invalid!');
+}
+
+if (LINE_CHANNEL_SECRET.length === 0) {
+  throw new Error('LINE_CHANNEL_SECRET env missing or invalid!');
+}
+
+if (!PORT) {
+  throw new Error('PORT env missing or invalid!');
 }
