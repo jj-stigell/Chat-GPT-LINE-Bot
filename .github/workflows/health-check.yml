@@ -1,0 +1,23 @@
+name:  url-health-check
+
+on:
+  schedule:
+    - cron:  '0 8 * * *'
+
+jobs:
+  health_check:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Check the deployed service is healthy
+      uses: jtalk/url-health-check-action@v2
+      with:
+        # Check the following URLs one by one sequentially.
+        url: https://line-bot-test-czu4.onrender.com/health
+        # Follow redirects, or just report success on 3xx status codes.
+        follow-redirect: false # Optional, defaults to "false".
+        # Fail this action after this many failed attempts.
+        max-attempts: 3 # Optional, defaults to 1.
+        # Delay between retries, allow enough time to take the start up in consideration.
+        retry-delay: 30s # Optional, only applicable to max-attempts > 1.
+        # Retry all errors, including 404. This option might trigger curl upgrade.
+        retry-all: false # Optional, defaults to "false".

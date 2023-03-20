@@ -6,7 +6,8 @@
   "description": "LINE message app bot utilizing OpenAI API",
   "main": "",
   "scripts": {
-    "build": "npx tsc",
+    "clean": "rimraf ./build",
+    "build": "npm run clean && npx tsc",
     "start": "node build/src/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "test": "NODE_ENV=test jest --verbose --detectOpenHandles --coverage",
