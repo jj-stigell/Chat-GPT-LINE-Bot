@@ -10,6 +10,35 @@ import https from 'https';
 import { HttpCode } from '../types/httpCode';
 import { Configuration, OpenAIApi } from 'openai';
 
+
+
+async function openAI(question: string): Promise<string> {
+
+  const configuration: Configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  const openai: OpenAIApi = new OpenAIApi(configuration);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const response: any = await openai.createCompletion({
+    model: 'text-davinci-003',
+    prompt: question,
+    temperature: 0,
+    max_tokens: 1000,
+    top_p: 1,
+    frequency_penalty: 0.0,
+    presence_penalty: 0.0
+  });
+
+  console.log(response.data);
+
+
+  return response.data.choices[0].text.trim();
+}
+
+
+
 const TOKEN: string = process.env.CHANNEL_TOKEN ?? '';
 
 
@@ -34,51 +63,20 @@ export async function ask(req: Request, res: Response): Promise<void> {
   await requestSchema.validate(req.body, { abortEarly: false });
   const question: string = req.body.question;
 
-  const configuration: Configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
 
-  const openai: OpenAIApi = new OpenAIApi(configuration);
+  const answer: string = await openAI(question);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const response: any = await openai.createCompletion({
-    model: 'text-davinci-003',
-    prompt: question,
-    temperature: 0,
-    max_tokens: 1000,
-    top_p: 1,
-    frequency_penalty: 0.0,
-    presence_penalty: 0.0
-  });
+  console.log(answer);
+
 
   res.status(HttpCode.Ok).send({
-    data: response.data.choices[0].text
+    data: answer
   });
 }
 
 
 
-async function openAI(question: string): Promise<string> {
 
-  const configuration: Configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-
-  const openai: OpenAIApi = new OpenAIApi(configuration);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const response: any = await openai.createCompletion({
-    model: 'text-davinci-003',
-    prompt: question,
-    temperature: 0,
-    max_tokens: 1000,
-    top_p: 1,
-    frequency_penalty: 0.0,
-    presence_penalty: 0.0
-  });
-
-  return response.data.choices[0].text;
-}
 
 
 
@@ -98,11 +96,13 @@ export async function line(req: Request, res: Response): Promise<void> {
     const dataString = JSON.stringify({
       replyToken: req.body.events[0].replyToken,
       messages: [
+        /*
         {
           'type': 'text',
           'text': req.body?.events[0]?.source?.userId ?
             `Hi user ${req.body?.events[0]?.source?.userId}` : 'Hi, here is the answer:'
         },
+        */
         {
           'type': 'text',
           'text': req.body?.events[0]?.message?.text ?
