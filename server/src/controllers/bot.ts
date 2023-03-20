@@ -56,10 +56,43 @@ export async function ask(req: Request, res: Response): Promise<void> {
   });
 }
 
+
+
+async function openAI(question: string): Promise<string> {
+
+  const configuration: Configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  const openai: OpenAIApi = new OpenAIApi(configuration);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const response: any = await openai.createCompletion({
+    model: 'text-davinci-003',
+    prompt: question,
+    temperature: 0,
+    max_tokens: 1000,
+    top_p: 1,
+    frequency_penalty: 0.0,
+    presence_penalty: 0.0
+  });
+
+  return response.data.choices[0].text;
+}
+
+
+
+
+
 export async function line(req: Request, res: Response): Promise<void> {
 
   res.send('HTTP POST request sent to the webhook URL!');
   // If the user sends a message to your bot, send a reply message
+
+
+  console.log('EVENTS', req.body.events);
+  console.log('EVENTS 0', req.body.events[0]);
+
   if (req.body.events[0].type === 'message') {
     // Message data, must be stringified
     const dataString = JSON.stringify({

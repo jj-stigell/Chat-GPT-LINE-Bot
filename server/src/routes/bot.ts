@@ -5,7 +5,7 @@ import { controllerDispatcher } from '../middleware/controllerDispatcher';
 export const router: Router = Router();
 
 router.get('/health', (req: Request, res: Response): void => {
-  res.status(200);
+  res.status(200).send();
   return;
 });
 
