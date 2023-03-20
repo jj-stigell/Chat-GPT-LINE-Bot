@@ -91,7 +91,10 @@ export async function line(req: Request, res: Response): Promise<void> {
   console.log('EVENTS', req.body.events);
   console.log('EVENTS 0', req.body.events[0]);
 
-  if (req.body.events[0].type === 'message') {
+  const prompt: string = req.body.events[0].message.text;
+
+
+  if (req.body.events[0].type === 'message' && prompt.toLowerCase().startsWith('bot')) {
     // Message data, must be stringified
     const dataString = JSON.stringify({
       replyToken: req.body.events[0].replyToken,
