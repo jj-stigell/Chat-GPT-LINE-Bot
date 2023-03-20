@@ -91,10 +91,12 @@ export async function line(req: Request, res: Response): Promise<void> {
   console.log('EVENTS', req.body.events);
   console.log('EVENTS 0', req.body.events[0]);
 
-  const prompt: string = req.body.events[0].message.text;
+  let prompt: string = req.body.events[0].message.text;
 
 
   if (req.body.events[0].type === 'message' && prompt.toLowerCase().startsWith('bot')) {
+    prompt = prompt.substring(3);
+
     // Message data, must be stringified
     const dataString = JSON.stringify({
       replyToken: req.body.events[0].replyToken,
@@ -173,4 +175,70 @@ Mar 20 01:23:29 PM    source: { type: 'user', userId: 'U565da51f2cb7af446e73c878
 Mar 20 01:23:29 PM    replyToken: '201ad4fa9ce940588b8b07c52a6783a4',
 Mar 20 01:23:29 PM    mode: 'active'
 Mar 20 01:23:29 PM  }
+
+
+
+
+
+
+
+
+Mar 20 02:28:53 PM  EVENTS [
+Mar 20 02:28:53 PM    {
+Mar 20 02:28:53 PM      type: 'message',
+Mar 20 02:28:53 PM      message: { type: 'text', id: '17833471599929', text: 'Bot hello' },
+Mar 20 02:28:53 PM      webhookEventId: '01GVYQVTJ9AEWZ1Q6Y3WXMYA7N',
+Mar 20 02:28:53 PM      deliveryContext: { isRedelivery: false },
+Mar 20 02:28:53 PM      timestamp: 1679290132823,
+Mar 20 02:28:53 PM      source: { type: 'user', userId: 'U565da51f2cb7af446e73c87840e59ec3' },
+Mar 20 02:28:53 PM      replyToken: 'cf99f3d2e8534de0a470841e1e1390b6',
+Mar 20 02:28:53 PM      mode: 'active'
+Mar 20 02:28:53 PM    }
+Mar 20 02:28:53 PM  ]
+Mar 20 02:28:53 PM  EVENTS 0 {
+Mar 20 02:28:53 PM    type: 'message',
+Mar 20 02:28:53 PM    message: { type: 'text', id: '17833471599929', text: 'Bot hello' },
+Mar 20 02:28:53 PM    webhookEventId: '01GVYQVTJ9AEWZ1Q6Y3WXMYA7N',
+Mar 20 02:28:53 PM    deliveryContext: { isRedelivery: false },
+Mar 20 02:28:53 PM    timestamp: 1679290132823,
+Mar 20 02:28:53 PM    source: { type: 'user', userId: 'U565da51f2cb7af446e73c87840e59ec3' },
+Mar 20 02:28:53 PM    replyToken: 'cf99f3d2e8534de0a470841e1e1390b6',
+Mar 20 02:28:53 PM    mode: 'active'
+Mar 20 02:28:53 PM  }
+Mar 20 02:28:54 PM  {
+Mar 20 02:28:54 PM    id: 'cmpl-6w2MfXzVHvMv0uqJvSjMuHmjScfZ1',
+Mar 20 02:28:54 PM    object: 'text_completion',
+Mar 20 02:28:54 PM    created: 1679290133,
+Mar 20 02:28:54 PM    model: 'text-davinci-003',
+Mar 20 02:28:54 PM    choices: [
+Mar 20 02:28:54 PM      {
+Mar 20 02:28:54 PM        text: '\n\nHi there! How can I help you?',
+Mar 20 02:28:54 PM        index: 0,
+Mar 20 02:28:54 PM        logprobs: null,
+Mar 20 02:28:54 PM        finish_reason: 'stop'
+Mar 20 02:28:54 PM      }
+Mar 20 02:28:54 PM    ],
+Mar 20 02:28:54 PM    usage: { prompt_tokens: 2, completion_tokens: 11, total_tokens: 13 }
+Mar 20 02:28:54 PM  }
+Mar 20 02:29:39 PM  {}{
+Mar 20 02:29:39 PM    id: 'cmpl-6w2NOtImlkf8KAhsmBlebLJXuJuAK',
+Mar 20 02:29:39 PM    object: 'text_completion',
+Mar 20 02:29:39 PM    created: 1679290178,
+Mar 20 02:29:39 PM    model: 'text-davinci-003',
+Mar 20 02:29:39 PM    choices: [
+Mar 20 02:29:39 PM      {
+Mar 20 02:29:39 PM        text: "\n\nYes, I'm doing great. Thanks for asking.",
+Mar 20 02:29:39 PM        index: 0,
+Mar 20 02:29:39 PM        logprobs: null,
+Mar 20 02:29:39 PM        finish_reason: 'stop'
+Mar 20 02:29:39 PM      }
+Mar 20 02:29:39 PM    ],
+Mar 20 02:29:39 PM    usage: { prompt_tokens: 5, completion_tokens: 13, total_tokens: 18 }
+Mar 20 02:29:39 PM  }
+
+
+
+
+
+
 */
