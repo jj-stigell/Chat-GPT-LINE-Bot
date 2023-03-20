@@ -18,30 +18,6 @@ app.use(express.urlencoded({
   extended: true
 }));
 
-app.get('/health', (_req: Request, res: Response): Response => {
-  return res.status(200).send();
-});
-
-app.post('/ask', async (req: Request, res: Response): Promise<Response> => {
-  const requestSchema: yup.AnyObject = yup.object({
-    question: yup
-      .string()
-      .required('question required')
-  });
-
-  await requestSchema.validate(req.body, { abortEarly: false });
-  const question: string = req.body.question;
-
-  const answer: string = await openAI(question);
-
-  console.log(answer);
-
-  return res.status(200).send({
-    data: answer
-  });
-});
-
-
 const middlewareConfig: MiddlewareConfig = {
   channelAccessToken: LINE_CHANNEL_ACCESS_TOKEN,
   channelSecret: LINE_CHANNEL_SECRET
@@ -53,6 +29,11 @@ const clientConfig: ClientConfig = {
 };
 
 const client: Client = new Client(clientConfig);
+
+app.get('/health', (_req: Request, res: Response): void => {
+  res.status(200).send();
+  return;
+});
 
 async function handleTextEvent(event: WebhookEvent): Promise<MessageAPIResponseBase | null> {
   if (event.type !== 'message' || event.message.type !== 'text') {
@@ -73,7 +54,9 @@ async function handleTextEvent(event: WebhookEvent): Promise<MessageAPIResponseB
 app.post(
   '/webhook',
   middleware(middlewareConfig),
-  async (req: Request, res: Response): Promise<Response> => {
+  async (req: Request, res: Response): Promise<void> => {
+    // Return a successfull message.
+    res.status(200).send();
 
     const events: Array<WebhookEvent> = req.body.events;
 
@@ -83,7 +66,6 @@ app.post(
     await Promise.all(
       events.map(async (event: WebhookEvent) => {
         try {
-
           if (
             event.type === 'message' &&
             event.message.type === 'text' &&
@@ -93,9 +75,6 @@ app.post(
           } else {
             return Promise.resolve(null);
           }
-
-
-
         } catch (err: unknown) {
           if (err instanceof Error) {
             console.error(err);
@@ -108,15 +87,30 @@ app.post(
         }
       })
     );
-
-    // Return a successfull message.
-    return res.status(200).json({
-      status: 'success'
-    });
   }
 );
 
 app.use(express.json());
+
+app.post('/ask', async (req: Request, res: Response): Promise<void> => {
+  const requestSchema: yup.AnyObject = yup.object({
+    question: yup
+      .string()
+      .required('question required')
+  });
+
+  await requestSchema.validate(req.body, { abortEarly: false });
+  const question: string = req.body.question;
+
+  const answer: string = await openAI(question);
+
+  console.log(answer);
+
+  res.status(200).send({
+    data: answer
+  });
+  return;
+});
 
 app.listen(PORT, async () => {
   console.log(`Bot started on PORT: ${PORT}`);
