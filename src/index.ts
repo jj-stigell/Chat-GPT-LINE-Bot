@@ -55,9 +55,6 @@ app.post(
   '/webhook',
   middleware(middlewareConfig),
   async (req: Request, res: Response): Promise<void> => {
-    // Return a successfull message.
-    res.status(200).send();
-
     const events: Array<WebhookEvent> = req.body.events;
 
     console.log('LINE events:', events);
@@ -81,12 +78,17 @@ app.post(
           }
 
           // Return an error message.
-          return res.status(500).json({
+          res.status(500).json({
             status: 'error'
           });
+          return;
         }
       })
     );
+
+    // Return a successfull message.
+    res.status(200).send();
+    return;
   }
 );
 
