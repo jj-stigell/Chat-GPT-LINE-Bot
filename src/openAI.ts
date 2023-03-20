@@ -20,7 +20,7 @@ export async function openAI(question: string): Promise<string> {
     presence_penalty: 0.0
   });
 
-  console.log(response.data);
+  console.log('OpenAI response:', response.data);
 
   return response.data.choices[0].text.trim();
 }
