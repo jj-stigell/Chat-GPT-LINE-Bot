@@ -5,6 +5,7 @@ export const PORT: number | undefined = Number(process.env.PORT);
 export const LINE_CHANNEL_ACCESS_TOKEN: string = process.env.LINE_CHANNEL_ACCESS_TOKEN ?? '';
 export const LINE_CHANNEL_SECRET: string = process.env.LINE_CHANNEL_SECRET ?? '';
 export const OPENAI_API_KEY: string | undefined = process.env.OPENAI_API_KEY;
+export const OPENAI_ORGANIZATION: string | undefined = process.env.OPENAI_ORGANIZATION;
 
 if (LINE_CHANNEL_ACCESS_TOKEN.length === 0) {
   throw new Error('LINE_CHANNEL_ACCESS_TOKEN env missing or invalid!');

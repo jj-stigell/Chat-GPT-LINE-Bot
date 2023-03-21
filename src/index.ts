@@ -7,6 +7,7 @@ import express, { Application, Request, Response } from 'express';
 import * as yup from 'yup';
 
 // Project imports
+import { promtCharLimit } from './configuration';
 import {
   PORT, LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN
 } from './environment';
@@ -41,7 +42,9 @@ async function handleTextEvent(event: WebhookEvent): Promise<MessageAPIResponseB
   }
 
   const replyToken: string = event.replyToken;
-  const text: string = await openAI(event.message.text.substring(3));
+  const prompt: string = event.message.text.substring(3);
+  const text: string = prompt.length <= promtCharLimit ?
+    await openAI(event.message.text.substring(3)) : `${promtCharLimit}文字未満のメッセージしか返信できません`;
 
   const response: TextMessage = {
     type: 'text',
