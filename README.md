@@ -95,9 +95,11 @@ When user adds the bot to group chat.
         3. Every N:th message, a personalized advertisement is also included in the reply.
         4. Reply is sent to the user with LINE API.
     * If message does not start with the keyword `bot`:
-        1. Do nothing.
+        1. Do nothing. (This way bot is called only then users want)
 6. Group receives the reply. (4 - 6 is repeated as long as user removes the bot from the group)
-7. User removes the bot from group, [Leave event](#events) sent to the bot server:
+7. If new user joins the group, [Member join event](#events) is sent to the bot server:
+    1. Bot will send welcome message, including link to privacy policy and ToS. (This can be problematic if big channel as LINE counts each receiver in the chat as separate message).
+8. User removes the bot from group, [Leave event](#events) sent to the bot server:
     1. Server receives request for all group data deletion.
     2. Mark group data for deletion. See [Data deletion](#data-deletion) for more information.
 
