@@ -28,8 +28,9 @@ app.get('/health', (req: Request, res: Response, next: NextFunction): void => {
 
 
 
-  //console.log(req.socket.remoteAddress);
-  //console.log(req.ip);
+  console.log('ips', req.ips);
+  console.log('sokcet', req.socket.remoteAddress);
+  console.log('ip',req.ip);
 
   res.status(200).send();
   next();
