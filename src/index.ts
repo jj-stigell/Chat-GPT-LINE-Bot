@@ -1,6 +1,6 @@
 // Modules
 import { middleware, MiddlewareConfig, WebhookEvent } from '@line/bot-sdk';
-import express, { Application, Request, Response } from 'express';
+import express, { Application, NextFunction, Request, Response } from 'express';
 
 // Project imports
 //import { connectToDatabase } from './database';
@@ -8,6 +8,7 @@ import { PORT, LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN } from './environm
 import {
   handleFollowEvent, handleJoinEvent, handleLeaveEvent, handleMessageEvent, handleUnfollowEvent
 } from './handleEvents';
+import { webhookLogger } from './logger';
 
 const middlewareConfig: MiddlewareConfig = {
   channelAccessToken: LINE_CHANNEL_ACCESS_TOKEN,
@@ -23,15 +24,21 @@ app.use(express.urlencoded({
 }));
 
 // Health check endpoint.
-app.get('/health', (_req: Request, res: Response): void => {
+app.get('/health', (req: Request, res: Response, next: NextFunction): void => {
+
+
+
+  //console.log(req.socket.remoteAddress);
+  //console.log(req.ip);
+
   res.status(200).send();
-  return;
+  next();
 });
 
 app.post(
   '/webhook',
   middleware(middlewareConfig),
-  async (req: Request, res: Response): Promise<void> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const events: Array<WebhookEvent> = req.body.events;
     console.log('LINE events:', events);
 
@@ -67,16 +74,18 @@ app.post(
           res.status(500).json({
             status: 'error'
           });
-          return;
+          next();
         }
       })
     );
 
     // Return a successfull message.
     res.status(200).send();
-    return;
+    next();
   }
 );
+
+app.use(webhookLogger());
 
 app.listen(PORT, async () => {
   console.log(`LINE bot started on PORT: ${PORT} 🤖`);
