@@ -81,7 +81,7 @@ export async function handleFollowEvent(event: FollowEvent): Promise<MessageAPIR
 export async function handleUnfollowEvent(event: UnfollowEvent): Promise<null> {
   // Extract user from the event.
   const user: User = event.source as User;
-  console.log('Bot unfollowed by user with id:', user);
+  console.log('Bot unfollowed by user with id:', user.userId);
   // TODO: remove from db, add to delete queue.
   return Promise.resolve(null);
 }
