@@ -19,7 +19,7 @@ const clientConfig: ClientConfig = {
 const client: Client = new Client(clientConfig);
 
 /**
- * Handles message event for bott 1-on-1 and group/mulri-person chats.
+ * Handles message event for both, 1-on-1 and group/multi-person chats.
  * handleMessageEvent is an asynchronous function that takes a WebhookEvent object as input and
  * processes the message event. It replies only to MessageEvents of type 'text' that start with
  * the {activateBotKeyword}. Upon completion, it returns a Promise containing a MessageAPIResponseBase object or null.
@@ -56,7 +56,9 @@ export async function handleMessageEvent(event: MessageEvent): Promise<MessageAP
 }
 
 /**
- * Handles following LINE user after their request.
+ * Handles following LINE user after their request. Send introduction message to the user.
+ * Adds user data to the database. If user has previously unfollowed the bot and data is
+ * marked delete but this process is not yet completed, sets data deletion to false.
  * handleFollowEvent is an asynchronous function that takes a WebhookEvent object as input and processes
  * the follow event. Upon completion, it returns a Promise containing a MessageAPIResponseBase object or null.
  * @param {WebhookEvent} event - A WebhookEvent object containing the follow event information.
@@ -72,7 +74,7 @@ export async function handleFollowEvent(event: FollowEvent): Promise<MessageAPIR
 }
 
 /**
- * Handles unfollowing LINE user after their request.
+ * Handles unfollowing LINE user after their request. Sets user data in the database for deletion.
  * handleUnfollowEvent is an asynchronous function that takes a WebhookEvent object as input and processes
  * the unfollow event. Upon completion, it returns a Promise containing a null.
  * @param {WebhookEvent} event - A WebhookEvent object containing the unfollow event information.
@@ -87,7 +89,9 @@ export async function handleUnfollowEvent(event: UnfollowEvent): Promise<null> {
 }
 
 /**
- * Handles joining to a LINE group or multi-person chat.
+ * Handles joining to a LINE group or multi-person chat. Send introduction message to the group.
+ * Adds group data to the database. If group has previously removed the bot from chat and data is
+ * marked delete but this process is not yet completed, sets data deletion to false.
  * handleFollowEvent is an asynchronous function that takes a WebhookEvent object as input and processes
  * the follow event. Upon completion, it returns a Promise containing a MessageAPIResponseBase object or null.
  * @param {WebhookEvent} event - A WebhookEvent object containing the follow event information.
@@ -103,7 +107,7 @@ export async function handleJoinEvent(event: JoinEvent): Promise<MessageAPIRespo
 }
 
 /**
- * Handles leaving from LINE multi-user or group chat.
+ * Handles leaving from LINE multi-user or group chat. Sets group data in the database for deletion.
  * handleLeaveEvent is an asynchronous function that takes a WebhookEvent object as input and processes
  * the leave event. Upon completion, it returns a Promise containing a null.
  * @param {WebhookEvent} event - A WebhookEvent object containing the leave event information.

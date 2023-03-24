@@ -12,7 +12,7 @@ export const textMessageEvent: MessageEvent = {
   source: {
     type: 'group',
     groupId: 'Ca56f94637cnrkd8F',
-    userId: 'U4af49806uy29Jjei4n'
+    userId: 'U4af49806uy29Jjei4nk85739684ht8s'
   },
   message: {
     id: '444573844083572737',
@@ -51,7 +51,7 @@ export const followEvent: FollowEvent = {
   timestamp: 1462629479859,
   source: {
     type: 'user',
-    userId: 'U4af498062984jFu4fd'
+    userId: 'U4af49806uy29Jjei4nk85739684ht8s'
   }
 };
 
@@ -62,7 +62,7 @@ export const unfollowEvent: UnfollowEvent = {
   timestamp: 1462629479859,
   source: {
     type: 'user',
-    userId: 'U4af498frw0629Hu64H'
+    userId: 'U4af49806uy29Jjei4nk85739684ht8s'
   }
 };
 
@@ -74,7 +74,7 @@ export const joinEvent: JoinEvent = {
   timestamp: 1462629479859,
   source: {
     type: 'group',
-    groupId: 'C4af49806fs29jf5jks'
+    groupId: 'G4af49806u879Jjjy4nk85739684ht8s'
   }
 };
 
@@ -86,7 +86,7 @@ export const leaveEvent: LeaveEvent = {
   timestamp: 1462629479859,
   source: {
     type: 'group',
-    groupId: 'C4af498d062953Hekl6'
+    groupId: 'G4af49806u879Jjjy4nk85739684ht8s'
   }
 };
 

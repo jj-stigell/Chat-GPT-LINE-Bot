@@ -33,7 +33,7 @@ app.post(
   middleware(middlewareConfig),
   async (req: Request, res: Response): Promise<void> => {
     const events: Array<WebhookEvent> = req.body.events;
-    console.log('LINE events:', events);
+    console.log('LINE events:', req.body);
 
     // Process all of the received events asynchronously.
     await Promise.all(
