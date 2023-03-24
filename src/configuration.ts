@@ -8,6 +8,9 @@ const tosUrl: string = 'https://neko-ai.onrender.com/#tos';
 // how to use URL.
 const howToUseUrl: string = 'https://neko-ai.onrender.com/#usage';
 
+// OpenAI prompt fail message.
+export const failMessage: string = '回答生成に失敗しました。もう一度お試しください。';
+
 // Max character amount user is allowed to "ask" the bot.
 export const promtCharLimit: number = 100;
 

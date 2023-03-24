@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 export const PORT: number | undefined = Number(process.env.PORT);
+export const NODE_ENV: string = process.env.NODE_ENV ?? 'development';
 export const LINE_CHANNEL_ACCESS_TOKEN: string = process.env.LINE_CHANNEL_ACCESS_TOKEN ?? '';
 export const LINE_CHANNEL_SECRET: string = process.env.LINE_CHANNEL_SECRET ?? '';
 export const OPENAI_API_KEY: string | undefined = process.env.OPENAI_API_KEY;

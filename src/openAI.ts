@@ -1,4 +1,7 @@
 import { Configuration, OpenAIApi } from 'openai';
+
+import { failMessage } from './configuration';
+import OpenAIRequest, { IOpenAIRequest } from './database/models/OpenAIRequest';
 import { OPENAI_API_KEY, OPENAI_ORGANIZATION } from './environment';
 
 const configuration: Configuration = new Configuration({
@@ -8,24 +11,33 @@ const configuration: Configuration = new Configuration({
 
 const openai: OpenAIApi = new OpenAIApi(configuration);
 
-export async function openAI(prompt: string): Promise<string> {
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const response: any = await openai.createCompletion({
-    model: 'text-davinci-003',
-    prompt,
-    temperature: 0,
-    max_tokens: 200,
-    top_p: 1,
-    frequency_penalty: 0.0,
-    presence_penalty: 0.0
-  });
-
-  console.log('OpenAI response:', response.data);
-
+export async function openAI(prompt: string, conversationId: string = '-'): Promise<string> {
   try {
-    return response.data.choices[0].text.trim();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const response: any= await openai.createCompletion({
+      model: 'text-davinci-003',
+      prompt,
+      temperature: 0,
+      max_tokens: 200,
+      top_p: 1,
+      frequency_penalty: 0.0,
+      presence_penalty: 0.0
+    });
+
+    console.log('OpenAI response:', response);
+    const message: string = response.data.choices[0].text.trim();
+
+    const openAIRequest: IOpenAIRequest = new OpenAIRequest({
+      _id: response.data.id,
+      conversationId,
+      message,
+      tokensUsed: Number(response.data.usage.total_tokens)
+    });
+    await openAIRequest.save();
+
+    return message;
   } catch (error: unknown) {
-    return 'Answer generation failed';
+    console.log('OpenAI query failed, error:', error);
+    return failMessage;
   }
 }

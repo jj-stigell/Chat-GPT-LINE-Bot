@@ -3,7 +3,7 @@ import { middleware, MiddlewareConfig, WebhookEvent } from '@line/bot-sdk';
 import express, { Application, NextFunction, Request, Response } from 'express';
 
 // Project imports
-//import { connectToDatabase } from './database';
+import { connectToDatabase } from './database';
 import { PORT, LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN } from './environment';
 import {
   handleFollowEvent, handleJoinEvent, handleLeaveEvent, handleMessageEvent, handleUnfollowEvent
@@ -15,7 +15,6 @@ const middlewareConfig: MiddlewareConfig = {
   channelSecret: LINE_CHANNEL_SECRET
 };
 
-//await connectToDatabase();
 
 const app: Application = express();
 
@@ -25,13 +24,9 @@ app.use(express.urlencoded({
 
 // Health check endpoint.
 app.get('/health', (req: Request, res: Response, next: NextFunction): void => {
-
-
-
   console.log('ips', req.ips);
   console.log('sokcet', req.socket.remoteAddress);
   console.log('ip',req.ip);
-
   res.status(200).send();
   next();
 });
@@ -86,8 +81,34 @@ app.post(
   }
 );
 
+app.use(express.json());
+
+import * as yup from 'yup';
+import { openAI } from './openAI';
+
+app.post('/ask', async (req: Request, res: Response): Promise<void> => {
+  const requestSchema: yup.AnyObject = yup.object({
+    question: yup
+      .string()
+      .required('question required')
+  });
+
+  await requestSchema.validate(req.body, { abortEarly: false });
+  const question: string = req.body.question;
+
+  const answer: string = await openAI(question);
+
+  console.log(answer);
+
+  res.status(200).send({
+    data: answer
+  });
+  return;
+});
+
 app.use(webhookLogger());
 
 app.listen(PORT, async () => {
+  connectToDatabase();
   console.log(`LINE bot started on PORT: ${PORT} 🤖`);
 });

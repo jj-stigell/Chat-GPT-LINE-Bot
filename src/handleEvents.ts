@@ -36,6 +36,7 @@ export async function handleMessageEvent(event: MessageEvent): Promise<MessageAP
 
   // Extract token and prompt from event.
   const replyToken: string = event.replyToken;
+  let conversationId: string = '-';
   let prompt: string = event.message.text;
 
   if (event.source.type === 'group') {
@@ -44,9 +45,12 @@ export async function handleMessageEvent(event: MessageEvent): Promise<MessageAP
     }
     // Remove the keyword in front of the prompt when in group/multi-person chats.
     prompt = prompt.substring(activateBotKeyword.length);
+    conversationId = event.source.groupId;
+  } else if (event.source.type === 'user') {
+    conversationId = event.source.userId;
   }
 
-  const text: string = prompt.length <= promtCharLimit ? await openAI(prompt) : promptTooLong;
+  const text: string = prompt.length <= promtCharLimit ? await openAI(prompt, conversationId) : promptTooLong;
 
   const response: TextMessage = {
     type: 'text',
