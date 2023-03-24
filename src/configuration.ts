@@ -30,7 +30,11 @@ export const userWelcomeMessage: TextMessage = {
 export const groupWelcomeMessage: TextMessage = {
   type: 'text',
   text: `皆さん、こんにちは！チャットボットをご利用いただきありがとうございます！私とのチャットを始める前に、プライバシーポリシーと利用規約をお読みください。
-  最大の質問の長さは${promtCharLimit}文字です。私には何でもお聞きいただけます。以下は、よく受け取る一般的な質問です。$`,
+  最大の質問の長さは${promtCharLimit}文字です。私には何でもお聞きいただけます。以下は、よく受け取る一般的な質問です。`
+};
+
+
+/*
   emojis: [
     {
       index: 0,
@@ -38,4 +42,4 @@ export const groupWelcomeMessage: TextMessage = {
       emojiId: '011'
     }
   ]
-};
+*/
