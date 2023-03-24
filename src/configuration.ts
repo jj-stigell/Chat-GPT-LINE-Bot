@@ -5,6 +5,9 @@ import { QuickReply, TextMessage } from '@line/bot-sdk';
 // Terms of service URL.
 const tosUrl: string = 'https://neko-ai.onrender.com/#tos';
 
+// how to use URL.
+const howToUseUrl: string = 'https://neko-ai.onrender.com/#usage';
+
 // Max character amount user is allowed to "ask" the bot.
 export const promtCharLimit: number = 100;
 
@@ -20,16 +23,16 @@ const quickReply: QuickReply = {
     {
       type: 'action',
       action: {
-        type: 'message',
-        label: 'how-to-use',
-        text: '使い方'
+        type: 'uri',
+        label: '使い方',
+        uri: howToUseUrl
       }
     },
     {
       type: 'action',
       action: {
         type: 'message',
-        label: 'tonights-menu',
+        label: '今夜の献立', // Does not work at group chat, because "bot" key missing
         text: '今夜の献立'
       }
     },
@@ -37,8 +40,8 @@ const quickReply: QuickReply = {
       type: 'action',
       action: {
         type: 'message',
-        label: 'baseball-rules',
-        text: '野球のルール'
+        label: '野球の英訳', // Does not work at group chat, because "bot" key missing
+        text: '野球の英訳'
       }
     },
     {
