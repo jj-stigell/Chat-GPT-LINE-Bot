@@ -28,7 +28,6 @@
 | [Postback event](https://developers.line.biz/en/reference/messaging-api/#postback-event) | Indicates that the user performed a postback action. You can reply to this event.                                   |      ✅      |                 ✅                |
 | [Video viewing complete event](https://developers.line.biz/en/reference/messaging-api/#video-viewing-complete) | Indicates that the user finished watching the video message with the specified trackingId sent from the LINE Official account. You can reply to this event. |      ✅      |                 ❌                |
 
-<br>
 
 ## Webhook redelivery option
 
@@ -38,19 +37,16 @@ Caution: Before enabling the Webhook redelivery option, check the following poin
 Due to network routing problems and other factors, duplicate webhook events may be sent. If this is an issue, use webhook event ID to detect duplicates.
 If webhook events are redelivered, the order in which webhook events occur and the order in which they reach the bot server can be different significantly. If this is an issue, check the context by looking at the timestamp of webhook events.
 
-<br>
 
 ## Bot functionality
 
 Describes bot functionality in bot user and group chats.
 
-<br>
 
 ### 1-on-1 chats
 
 When user is chatting alone in private conversation with the bot.
 
-<br>
 
 #### User bot workflow
 
@@ -71,13 +67,11 @@ When user is chatting alone in private conversation with the bot.
     1. Server receives request for all user data deletion.
     2. Mark user data for deletion. See [Data deletion](#data-deletion) for more information.
 
-<br>
 
 ### Group chats
 
 When user adds the bot to group chat.
 
-<br>
 
 #### Group bot workflow
 
@@ -103,10 +97,8 @@ When user adds the bot to group chat.
     1. Server receives request for all group data deletion.
     2. Mark group data for deletion. See [Data deletion](#data-deletion) for more information.
 
-<br>
 
 ### Data deletion
 
-Cron job checks every hour user/group deletion request older than 24 hours and deletes all data related to that user id.
+Cron job checks every hour user/group deletion request older than 24 hours and deletes all data related to that user or group id.
 
-<br>

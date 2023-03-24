@@ -8,12 +8,15 @@ import * as yup from 'yup';
 
 // Project imports
 import { promtCharLimit } from './configuration';
+//import { connectToDatabase } from './database';
 import {
   PORT, LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN
 } from './environment';
 import { openAI } from './openAI';
 
 const app: Application = express();
+
+//await connectToDatabase();
 
 app.use(express.urlencoded({
   extended: true
@@ -66,6 +69,33 @@ app.post(
     await Promise.all(
       events.map(async (event: WebhookEvent) => {
         try {
+
+          /*
+
+          map events to correct handlers
+
+          MESSAGES:
+          - user message
+          - group message
+
+          REMOVE:
+          - user remove bot
+          - group remove bot
+
+          JOIN:
+          - bot joins user chat
+          - bot joins group chat
+
+          */
+
+
+
+
+
+
+
+
+
           if (
             event.type === 'message' &&
             event.message.type === 'text' &&

@@ -23,5 +23,9 @@ export async function openAI(prompt: string): Promise<string> {
 
   console.log('OpenAI response:', response.data);
 
-  return response.data.choices[0].text.trim();
+  try {
+    return response.data.choices[0].text.trim();
+  } catch (error: unknown) {
+    return 'Answer generation failed';
+  }
 }
