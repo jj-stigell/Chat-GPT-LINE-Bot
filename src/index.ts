@@ -35,7 +35,7 @@ app.post(
 
     if (!Array.isArray(req.body.events)) {
       res.status(500).end();
-      return;
+      next();
     }
 
     const events: Array<WebhookEvent> = req.body.events;
@@ -43,7 +43,9 @@ app.post(
 
     // Process all of the received events asynchronously.
     Promise.all(events.map(handleEvent))
-      .then(() => {
+      .then((jeee: any) => {
+
+        console.log('ALL PROMISEEEES', jeee);
         res.status(200).send();
       })
       .catch((err: unknown) => {

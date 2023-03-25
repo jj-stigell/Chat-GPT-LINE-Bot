@@ -24,7 +24,7 @@ export async function openAI(prompt: string, conversationId: string = '-'): Prom
       presence_penalty: 0.0
     });
 
-    console.log('OpenAI response:', response);
+    console.log('OpenAI response:', response.data);
     const message: string = response.data.choices[0].text.trim();
 
     const openAIRequest: IOpenAIRequest = new OpenAIRequest({
