@@ -1,7 +1,7 @@
 // Modules
 import {
   Client, ClientConfig, FollowEvent, Group, JoinEvent, LeaveEvent,
-  MessageAPIResponseBase, TextMessage, UnfollowEvent, User, MessageEvent
+  MessageAPIResponseBase, TextMessage, UnfollowEvent, User, EventSource, WebhookEvent, TextEventMessage
 } from '@line/bot-sdk';
 
 // Project imports
@@ -18,6 +18,52 @@ const clientConfig: ClientConfig = {
 
 const client: Client = new Client(clientConfig);
 
+
+
+
+
+
+
+
+
+export function handleEvent(event: WebhookEvent): Promise<MessageAPIResponseBase | null> {
+  switch (event.type) {
+  case 'message':
+    switch (event.message.type) {
+    case 'text':
+      return handleTextEvent(event.message, event.replyToken, event.source);
+    default:
+      console.log(`Unsupported event type: ${event.message.type}`);
+      return Promise.resolve(null);
+    }
+  case 'follow':
+    return handleFollowEvent(event);
+  case 'unfollow':
+    return handleUnfollowEvent(event);
+  case 'join':
+    return handleJoinEvent(event);
+  case 'leave':
+    return handleLeaveEvent(event);
+  default:
+    console.log(`Unsupported event type: ${event.type}`);
+    return Promise.resolve(null);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * Handles message event for both, 1-on-1 and group/multi-person chats.
  * handleMessageEvent is an asynchronous function that takes a WebhookEvent object as input and
@@ -26,28 +72,23 @@ const client: Client = new Client(clientConfig);
  * @param {WebhookEvent} event - A WebhookEvent object containing the message event information.
  * @returns {Promise<MessageAPIResponseBase | null>} - A Promise containing a MessageAPIResponseBase object or null.
  */
-export async function handleMessageEvent(event: MessageEvent): Promise<MessageAPIResponseBase | null> {
-  // Reply only to MessageEvents that are type 'text'.
-  if (event.type !== 'message' || event.message.type !== 'text') {
-    return Promise.resolve(null);
-  }
+export async function handleTextEvent(
+  message: TextEventMessage, replyToken: string, source: EventSource
+): Promise<MessageAPIResponseBase | null> {
 
   // TODO: add everything to db.
-
-  // Extract token and prompt from event.
-  const replyToken: string = event.replyToken;
   let conversationId: string = '-';
-  let prompt: string = event.message.text;
+  let prompt: string = message.text;
 
-  if (event.source.type === 'group') {
-    if (!event.message.text.toLowerCase().startsWith(activateBotKeyword)) {
+  if (source.type === 'group') {
+    if (!message.text.toLowerCase().startsWith(activateBotKeyword)) {
       return Promise.resolve(null);
     }
     // Remove the keyword in front of the prompt when in group/multi-person chats.
     prompt = prompt.substring(activateBotKeyword.length);
-    conversationId = event.source.groupId;
-  } else if (event.source.type === 'user') {
-    conversationId = event.source.userId;
+    conversationId = source.groupId;
+  } else if (source.type === 'user') {
+    conversationId = source.userId;
   }
 
   const text: string = prompt.length <= promtCharLimit ? await openAI(prompt, conversationId) : promptTooLong;
@@ -56,7 +97,7 @@ export async function handleMessageEvent(event: MessageEvent): Promise<MessageAP
     type: 'text',
     text
   };
-  return await client.replyMessage(replyToken, response);
+  return client.replyMessage(replyToken, response);
 }
 
 /**
@@ -68,13 +109,13 @@ export async function handleMessageEvent(event: MessageEvent): Promise<MessageAP
  * @param {WebhookEvent} event - A WebhookEvent object containing the follow event information.
  * @returns {Promise<MessageAPIResponseBase | null>} - A Promise containing a MessageAPIResponseBase object or null.
 */
-export async function handleFollowEvent(event: FollowEvent): Promise<MessageAPIResponseBase | null> {
+export async function handleFollowEvent(event: FollowEvent): Promise<MessageAPIResponseBase> {
   // Extract token and user from the event.
   const replyToken: string = event.replyToken;
   const user: User = event.source as User;
   // TODO: add to db.
   console.log('Bot followed by user id:', user.userId);
-  return await client.replyMessage(replyToken, userWelcomeMessage);
+  return client.replyMessage(replyToken, userWelcomeMessage);
 }
 
 /**
@@ -101,13 +142,13 @@ export async function handleUnfollowEvent(event: UnfollowEvent): Promise<null> {
  * @param {WebhookEvent} event - A WebhookEvent object containing the follow event information.
  * @returns {Promise<MessageAPIResponseBase | null>} - A Promise containing a MessageAPIResponseBase object or null.
 */
-export async function handleJoinEvent(event: JoinEvent): Promise<MessageAPIResponseBase | null> {
+export async function handleJoinEvent(event: JoinEvent): Promise<MessageAPIResponseBase> {
   // Extract token and group from the event.
   const replyToken: string = event.replyToken;
   const group: Group = event.source as Group;
   // TODO: add to db.
   console.log('Bot joined to group id:', group.groupId);
-  return await client.replyMessage(replyToken, groupWelcomeMessage);
+  return client.replyMessage(replyToken, groupWelcomeMessage);
 }
 
 /**

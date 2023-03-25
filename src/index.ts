@@ -5,16 +5,13 @@ import express, { Application, NextFunction, Request, Response } from 'express';
 // Project imports
 import { connectToDatabase } from './database';
 import { PORT, LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN } from './environment';
-import {
-  handleFollowEvent, handleJoinEvent, handleLeaveEvent, handleMessageEvent, handleUnfollowEvent
-} from './handleEvents';
+import { handleEvent } from './eventHandlers';
 import { webhookLogger } from './logger';
 
 const middlewareConfig: MiddlewareConfig = {
   channelAccessToken: LINE_CHANNEL_ACCESS_TOKEN,
   channelSecret: LINE_CHANNEL_SECRET
 };
-
 
 const app: Application = express();
 
@@ -35,76 +32,27 @@ app.post(
   '/webhook',
   middleware(middlewareConfig),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
+    if (!Array.isArray(req.body.events)) {
+      res.status(500).end();
+      return;
+    }
+
     const events: Array<WebhookEvent> = req.body.events;
     console.log('LINE events:', events);
 
     // Process all of the received events asynchronously.
-    await Promise.all(
-      events.map(async (event: WebhookEvent): Promise<void> => {
-        try {
-          switch (event.type) {
-          case 'message':
-            handleMessageEvent(event);
-            break;
-          case 'follow':
-            handleFollowEvent(event);
-            break;
-          case 'unfollow':
-            handleUnfollowEvent(event);
-            break;
-          case 'join':
-            handleJoinEvent(event);
-            break;
-          case 'leave':
-            handleLeaveEvent(event);
-            break;
-          default:
-            console.log(`Unsupported event type: ${event.type}`);
-            Promise.resolve(null);
-            break;
-          }
-        } catch (err: unknown) {
-          console.error(err);
-
-          // Return an error message.
-          res.status(500).json({
-            status: 'error'
-          });
-          next();
-        }
+    Promise.all(events.map(handleEvent))
+      .then(() => {
+        res.status(200).send();
       })
-    );
-
-    // Return a successfull message.
-    res.status(200).send();
+      .catch((err: unknown) => {
+        console.error(err);
+        res.status(500).end();
+      });
     next();
   }
 );
-
-app.use(express.json());
-
-import * as yup from 'yup';
-import { openAI } from './openAI';
-
-app.post('/ask', async (req: Request, res: Response): Promise<void> => {
-  const requestSchema: yup.AnyObject = yup.object({
-    question: yup
-      .string()
-      .required('question required')
-  });
-
-  await requestSchema.validate(req.body, { abortEarly: false });
-  const question: string = req.body.question;
-
-  const answer: string = await openAI(question);
-
-  console.log(answer);
-
-  res.status(200).send({
-    data: answer
-  });
-  return;
-});
 
 app.use(webhookLogger());
 
