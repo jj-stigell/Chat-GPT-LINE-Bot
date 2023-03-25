@@ -1,6 +1,15 @@
 /* eslint-disable max-len */
 // Modules
-import { QuickReplyItem, TextMessage } from '@line/bot-sdk';
+import { MiddlewareConfig, QuickReplyItem, TextMessage } from '@line/bot-sdk';
+
+// Project imports
+import { LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET } from './environment';
+
+// Config for LINE middleware for verifying signatures.
+export const lineMiddlewareConfig: MiddlewareConfig = {
+  channelAccessToken: LINE_CHANNEL_ACCESS_TOKEN,
+  channelSecret: LINE_CHANNEL_SECRET
+};
 
 // Terms of service URL.
 const tosUrl: string = 'https://neko-ai.onrender.com/#tos';

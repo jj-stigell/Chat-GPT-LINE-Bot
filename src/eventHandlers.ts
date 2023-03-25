@@ -18,15 +18,13 @@ const clientConfig: ClientConfig = {
 
 const client: Client = new Client(clientConfig);
 
-
-
-
-
-
-
-
-
-export function handleEvent(event: WebhookEvent): Promise<MessageAPIResponseBase | null> {
+/**
+ * Handles LINE webhook events by delegating to specific handlers based on event type.
+ * @param {WebhookEvent} event - A WebhookEvent object containing the event information.
+ * @returns {Promise<MessageAPIResponseBase | undefined>} - A Promise containing a MessageAPIResponseBase
+ * object or undefined if no matching handler function.
+ */
+export function handleEvent(event: WebhookEvent): Promise<MessageAPIResponseBase | undefined> {
   switch (event.type) {
   case 'message':
     switch (event.message.type) {
@@ -34,7 +32,7 @@ export function handleEvent(event: WebhookEvent): Promise<MessageAPIResponseBase
       return handleTextEvent(event.message, event.replyToken, event.source);
     default:
       console.log(`Unsupported event type: ${event.message.type}`);
-      return Promise.resolve(null);
+      return Promise.resolve(undefined);
     }
   case 'follow':
     return handleFollowEvent(event);
@@ -46,35 +44,25 @@ export function handleEvent(event: WebhookEvent): Promise<MessageAPIResponseBase
     return handleLeaveEvent(event);
   default:
     console.log(`Unsupported event type: ${event.type}`);
-    return Promise.resolve(null);
+    return Promise.resolve(undefined);
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /**
  * Handles message event for both, 1-on-1 and group/multi-person chats.
  * handleMessageEvent is an asynchronous function that takes a WebhookEvent object as input and
  * processes the message event. It replies only to MessageEvents of type 'text' that start with
- * the {activateBotKeyword}. Upon completion, it returns a Promise containing a MessageAPIResponseBase object or null.
- * @param {WebhookEvent} event - A WebhookEvent object containing the message event information.
- * @returns {Promise<MessageAPIResponseBase | null>} - A Promise containing a MessageAPIResponseBase object or null.
+ * the {activateBotKeyword}. Upon completion, it returns a Promise containing
+ * a MessageAPIResponseBase object or undefined.
+ * @param {TextEventMessage} message - A TextEventMessage object containing the message event information.
+ * @param {string} replyToken - Reply specific token, required for succesful replyMessage.
+ * @param {EventSource} source - Event source information, describes source type (User | Group | Room).
+ * @returns {Promise<MessageAPIResponseBase | undefined>} - A Promise containing a MessageAPIResponseBase
+ * object or undefined.
  */
 export async function handleTextEvent(
   message: TextEventMessage, replyToken: string, source: EventSource
-): Promise<MessageAPIResponseBase | null> {
+): Promise<MessageAPIResponseBase | undefined> {
 
   // TODO: add everything to db.
   let conversationId: string = '-';
@@ -82,7 +70,7 @@ export async function handleTextEvent(
 
   if (source.type === 'group') {
     if (!message.text.toLowerCase().startsWith(activateBotKeyword)) {
-      return Promise.resolve(null);
+      return;
     }
     // Remove the keyword in front of the prompt when in group/multi-person chats.
     prompt = prompt.substring(activateBotKeyword.length);
@@ -105,9 +93,9 @@ export async function handleTextEvent(
  * Adds user data to the database. If user has previously unfollowed the bot and data is
  * marked delete but this process is not yet completed, sets data deletion to false.
  * handleFollowEvent is an asynchronous function that takes a WebhookEvent object as input and processes
- * the follow event. Upon completion, it returns a Promise containing a MessageAPIResponseBase object or null.
- * @param {WebhookEvent} event - A WebhookEvent object containing the follow event information.
- * @returns {Promise<MessageAPIResponseBase | null>} - A Promise containing a MessageAPIResponseBase object or null.
+ * the follow event. Upon completion, it returns a Promise containing a MessageAPIResponseBase object.
+ * @param {FollowEvent} event - A FollowEvent object containing the follow event information.
+ * @returns {Promise<MessageAPIResponseBase>} - A Promise containing a MessageAPIResponseBase object.
 */
 export async function handleFollowEvent(event: FollowEvent): Promise<MessageAPIResponseBase> {
   // Extract token and user from the event.
@@ -121,16 +109,16 @@ export async function handleFollowEvent(event: FollowEvent): Promise<MessageAPIR
 /**
  * Handles unfollowing LINE user after their request. Sets user data in the database for deletion.
  * handleUnfollowEvent is an asynchronous function that takes a WebhookEvent object as input and processes
- * the unfollow event. Upon completion, it returns a Promise containing a null.
- * @param {WebhookEvent} event - A WebhookEvent object containing the unfollow event information.
- * @returns {Promise<null>} - A Promise containing a null.
+ * the unfollow event. Upon completion, it returns a Promise containing a undefined.
+ * @param {UnfollowEvent} event - A UnfollowEvent object containing the unfollow event information.
+ * @returns {Promise<undefined>} - A Promise containing a undefined.
 */
-export async function handleUnfollowEvent(event: UnfollowEvent): Promise<null> {
+export async function handleUnfollowEvent(event: UnfollowEvent): Promise<undefined> {
   // Extract user from the event.
   const user: User = event.source as User;
   console.log('Bot unfollowed by user with id:', user.userId);
   // TODO: remove from db, add to delete queue.
-  return Promise.resolve(null);
+  return;
 }
 
 /**
@@ -138,9 +126,9 @@ export async function handleUnfollowEvent(event: UnfollowEvent): Promise<null> {
  * Adds group data to the database. If group has previously removed the bot from chat and data is
  * marked delete but this process is not yet completed, sets data deletion to false.
  * handleFollowEvent is an asynchronous function that takes a WebhookEvent object as input and processes
- * the follow event. Upon completion, it returns a Promise containing a MessageAPIResponseBase object or null.
- * @param {WebhookEvent} event - A WebhookEvent object containing the follow event information.
- * @returns {Promise<MessageAPIResponseBase | null>} - A Promise containing a MessageAPIResponseBase object or null.
+ * the follow event. Upon completion, it returns a Promise containing a MessageAPIResponseBase object.
+ * @param {JoinEvent} event - A JoinEvent object containing the follow event information.
+ * @returns {Promise<MessageAPIResponseBase>} - A Promise containing a MessageAPIResponseBase object.
 */
 export async function handleJoinEvent(event: JoinEvent): Promise<MessageAPIResponseBase> {
   // Extract token and group from the event.
@@ -154,14 +142,14 @@ export async function handleJoinEvent(event: JoinEvent): Promise<MessageAPIRespo
 /**
  * Handles leaving from LINE multi-user or group chat. Sets group data in the database for deletion.
  * handleLeaveEvent is an asynchronous function that takes a WebhookEvent object as input and processes
- * the leave event. Upon completion, it returns a Promise containing a null.
- * @param {WebhookEvent} event - A WebhookEvent object containing the leave event information.
- * @returns {Promise<null>} - A Promise containing a null.
+ * the leave event. Upon completion, it returns a Promise containing a undefined.
+ * @param {LeaveEvent} event - A LeaveEvent object containing the leave event information.
+ * @returns {Promise<undefined>} - A Promise containing a undefined.
 */
-export async function handleLeaveEvent(event: LeaveEvent): Promise<null> {
+export async function handleLeaveEvent(event: LeaveEvent): Promise<undefined> {
   const source: Group = event.source as Group;
   const groupId: string = source.groupId;
   console.log('Bot leaving from group id:', groupId);
   // TODO: remove from db, add to delete queue.
-  return Promise.resolve(null);
+  return;
 }

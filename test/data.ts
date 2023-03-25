@@ -4,7 +4,31 @@ import {
 
 // Webhook event object which contains the sent message.
 // https://developers.line.biz/en/reference/messaging-api/#message-event
-export const textMessageEvent: MessageEvent = {
+export const textMessageEventUser: MessageEvent = {
+  replyToken: 'nHuyWiB7yP5Zw52FIkcQobQuGDXCTA',
+  type: 'message',
+  mode: 'active',
+  timestamp: 1462629479859,
+  source: {
+    type: 'user',
+    userId: 'U4af49806uy29Jjei4nk84539684ht8s'
+  },
+  message: {
+    id: '444573844083572737',
+    type: 'text',
+    text: '@All @example Good Morning!! (love)',
+    emojis: [
+      {
+        index: 29,
+        length: 6,
+        productId: '5ac1bfd5040ab15980c9b435',
+        emojiId: '001'
+      }
+    ]
+  }
+};
+
+export const textMessageEventGroup: MessageEvent = {
   replyToken: 'nHuyWiB7yP5Zw52FIkcQobQuGDXCTA',
   type: 'message',
   mode: 'active',
@@ -94,7 +118,8 @@ export const leaveEvent: LeaveEvent = {
 export const webhookRequestCollection: WebhookRequestBody = {
   destination: 'U1a32e4t778d2jh56c8a61d99469e3e46',
   events: [
-    textMessageEvent,
+    textMessageEventUser,
+    textMessageEventGroup,
     followEvent,
     unfollowEvent,
     joinEvent,
