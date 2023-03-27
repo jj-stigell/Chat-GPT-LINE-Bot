@@ -3,10 +3,11 @@ import {
   Client, ClientConfig, FollowEvent, Group, JoinEvent, LeaveEvent,
   MessageAPIResponseBase, TextMessage, UnfollowEvent, User, EventSource, WebhookEvent, TextEventMessage
 } from '@line/bot-sdk';
+import NodeCache from 'node-cache';
 
 // Project imports
 import {
-  activateBotKeyword, userWelcomeMessage, groupWelcomeMessage, promtCharLimit, promptTooLong
+  activateBotKeyword, userWelcomeMessage, groupWelcomeMessage, promtCharLimit, promptTooLong, nodeCacheOptions
 } from './configuration';
 import { LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN } from './environment';
 import { openAI } from './openAI';
@@ -17,6 +18,7 @@ const clientConfig: ClientConfig = {
 };
 
 const client: Client = new Client(clientConfig);
+const promptCache: NodeCache = new NodeCache(nodeCacheOptions);
 
 /**
  * Handles LINE webhook events by delegating to specific handlers based on event type.
@@ -68,24 +70,39 @@ export async function handleTextEvent(
   let conversationId: string = '-';
   let prompt: string = message.text;
 
-  if (source.type === 'group') {
-    if (!message.text.toLowerCase().startsWith(activateBotKeyword)) {
-      return;
-    }
-    // Remove the keyword in front of the prompt when in group/multi-person chats.
-    prompt = prompt.substring(activateBotKeyword.length);
-    conversationId = source.groupId;
-  } else if (source.type === 'user') {
-    conversationId = source.userId;
-  }
-
-  const text: string = prompt.length <= promtCharLimit ? await openAI(prompt, conversationId) : promptTooLong;
+  // Check cache for the user prompt.
+  let text: string | undefined = promptCache.get(prompt);
 
   const response: TextMessage = {
     type: 'text',
-    text
+    text: text ?? ''
   };
-  return client.replyMessage(replyToken, response);
+
+  if (!text) {
+    console.log('No cached prompt found!');
+
+    if (source.type === 'group') {
+      if (!message.text.toLowerCase().startsWith(activateBotKeyword)) {
+        return;
+      }
+      // Remove the keyword in front of the prompt when in group/multi-person chats.
+      prompt = prompt.substring(activateBotKeyword.length);
+      conversationId = source.groupId;
+    } else if (source.type === 'user') {
+      conversationId = source.userId;
+    }
+
+    text = prompt.length <= promtCharLimit ? await openAI(prompt, conversationId) : promptTooLong;
+    response.text = text;
+
+    // Add to cache.
+    promptCache.set(prompt, text);
+
+    return client.replyMessage(replyToken, response);
+  } else {
+    console.log('Prompt found from cache!');
+    return client.replyMessage(replyToken, response);
+  }
 }
 
 /**
