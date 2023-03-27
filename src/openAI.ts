@@ -1,8 +1,8 @@
 import { Configuration, OpenAIApi } from 'openai';
 
-import { failMessage } from './configuration';
+import { failMessage } from './configs/configuration';
 import OpenAIRequest, { IOpenAIRequest } from './database/models/OpenAIRequest';
-import { OPENAI_API_KEY, OPENAI_ORGANIZATION } from './environment';
+import { OPENAI_API_KEY, OPENAI_ORGANIZATION } from './configs/environment';
 
 const configuration: Configuration = new Configuration({
   apiKey: OPENAI_API_KEY,

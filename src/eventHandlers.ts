@@ -3,13 +3,13 @@ import {
   Client, ClientConfig, FollowEvent, Group, JoinEvent, LeaveEvent,
   MessageAPIResponseBase, TextMessage, UnfollowEvent, User, EventSource, WebhookEvent, TextEventMessage
 } from '@line/bot-sdk';
-import NodeCache from 'node-cache';
 
 // Project imports
 import {
-  activateBotKeyword, userWelcomeMessage, groupWelcomeMessage, promtCharLimit, promptTooLong, nodeCacheOptions
-} from './configuration';
-import { LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN } from './environment';
+  activateBotKeyword, userWelcomeMessage, groupWelcomeMessage, promtCharLimit, promptTooLong
+} from './configs/configuration';
+import { promptCache } from './database/util/cache';
+import { LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN } from './configs/environment';
 import { openAI } from './openAI';
 
 const clientConfig: ClientConfig = {
@@ -18,7 +18,6 @@ const clientConfig: ClientConfig = {
 };
 
 const client: Client = new Client(clientConfig);
-const promptCache: NodeCache = new NodeCache(nodeCacheOptions);
 
 /**
  * Handles LINE webhook events by delegating to specific handlers based on event type.
@@ -71,7 +70,7 @@ export async function handleTextEvent(
   let prompt: string = message.text;
 
   // Check cache for the user prompt.
-  let text: string | undefined = promptCache.get(prompt);
+  let text: string | undefined = promptCache.get(prompt.toLowerCase());
 
   const response: TextMessage = {
     type: 'text',
@@ -96,7 +95,7 @@ export async function handleTextEvent(
     response.text = text;
 
     // Add to cache.
-    promptCache.set(prompt, text);
+    promptCache.set(prompt.toLowerCase(), text);
 
     return client.replyMessage(replyToken, response);
   } else {

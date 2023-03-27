@@ -1,6 +1,6 @@
 import mongoose, { ConnectOptions } from 'mongoose';
 
-import { MONGODB_URI } from '../environment';
+import { MONGODB_URI } from '../configs/environment';
 
 const MONDODB_OPTIONS: ConnectOptions = {
   ssl: true,

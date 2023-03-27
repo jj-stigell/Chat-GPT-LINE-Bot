@@ -3,10 +3,11 @@ import { middleware } from '@line/bot-sdk';
 import express, { Application } from 'express';
 
 // Project imports
-import { lineMiddlewareConfig } from './configuration';
+import { lineMiddlewareConfig } from './configs/configuration';
 import { connectToDatabase } from './database';
-import { PORT } from './environment';
-import { loggerMiddleware } from './logger';
+import { PORT } from './configs/environment';
+import { populateCache } from './database/util/cache';
+import { loggerMiddleware } from './database/util/logger';
 import { healthCheck, webhookHandler } from './routes';
 
 export const app: Application = express();
@@ -17,6 +18,7 @@ app.post('/webhook', middleware(lineMiddlewareConfig), webhookHandler);
 app.use(loggerMiddleware());
 
 app.listen(PORT, async function () {
+  populateCache();
   connectToDatabase();
   console.log(`LINE bot started on PORT: ${PORT} 🤖`);
 });

@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 // Modules
 import { MiddlewareConfig, QuickReplyItem, TextMessage } from '@line/bot-sdk';
-import { Options } from 'node-cache';
 
 // Project imports
 import { LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET } from './environment';
@@ -10,15 +9,6 @@ import { LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET } from './environment';
 export const lineMiddlewareConfig: MiddlewareConfig = {
   channelAccessToken: LINE_CHANNEL_ACCESS_TOKEN,
   channelSecret: LINE_CHANNEL_SECRET
-};
-
-// Caching options for the messaging webhook prompts.
-export const nodeCacheOptions: Options = {
-  stdTTL: 3600 * 24, // The standard ttl as number in seconds for every generated cache element. 0 = unlimited
-  checkperiod: 3600, // The period in seconds, as a number, used for the automatic delete check interval. 0 = no periodic check.
-  useClones: false, //If true you'll get a copy of the cached variable. If false you'll save and get just the reference.
-  deleteOnExpire: true, // If true the variable will be deleted. If false the variable will remain.
-  maxKeys: -1 // A maximum amount of keys that can be stored in the cache. If a new item is set and the cache is full, an error is thrown and the key will not be saved in the cache. -1 disables the key limit.
 };
 
 // Terms of service URL.
