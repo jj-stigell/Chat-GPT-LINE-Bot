@@ -1,7 +1,6 @@
 import { Configuration, OpenAIApi } from 'openai';
 
 import { failMessage } from './configs/configuration';
-import OpenAIRequest, { IOpenAIRequest } from './database/models/OpenAIRequest';
 import { OPENAI_API_KEY, OPENAI_ORGANIZATION } from './configs/environment';
 
 const configuration: Configuration = new Configuration({
@@ -11,7 +10,13 @@ const configuration: Configuration = new Configuration({
 
 const openai: OpenAIApi = new OpenAIApi(configuration);
 
-export async function openAI(prompt: string, conversationId: string = '-'): Promise<string> {
+export type OpenAIResponse = {
+  id: string;
+  promptReply: string;
+  tokensUsed: number;
+};
+
+export async function openAI(prompt: string): Promise<OpenAIResponse> {
   try {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response: any= await openai.createCompletion({
@@ -24,20 +29,19 @@ export async function openAI(prompt: string, conversationId: string = '-'): Prom
       presence_penalty: 0.0
     });
 
-    console.log('OpenAI response:', response.data);
+    console.log('OpenAI response:', response.data.choices[0]);
     const message: string = response.data.choices[0].text.trim();
 
-    const openAIRequest: IOpenAIRequest = new OpenAIRequest({
-      _id: response.data.id,
-      conversationId,
-      message,
+    return {
+      id: response.data.id,
+      promptReply: message,
       tokensUsed: Number(response.data.usage.total_tokens)
-    });
-    await openAIRequest.save();
-
-    return message;
+    };
   } catch (error: unknown) {
     console.log('OpenAI query failed, error:', error);
-    return failMessage;
+    return {
+      id: '-',
+      promptReply: failMessage,
+      tokensUsed: 0 };
   }
 }

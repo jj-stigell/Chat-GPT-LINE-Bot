@@ -8,9 +8,9 @@ import {
 import {
   activateBotKeyword, userWelcomeMessage, groupWelcomeMessage, promtCharLimit, promptTooLong
 } from './configs/configuration';
-import { promptCache } from './database/util/cache';
+import { promptCache } from './util/cache';
 import { LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN } from './configs/environment';
-import { openAI } from './openAI';
+import { openAI, OpenAIResponse } from './openAI';
 
 const clientConfig: ClientConfig = {
   channelAccessToken: LINE_CHANNEL_ACCESS_TOKEN,
@@ -74,7 +74,7 @@ export async function handleTextEvent(
 
   const response: TextMessage = {
     type: 'text',
-    text: text ?? ''
+    text: text ?? promptTooLong
   };
 
   if (!text) {
@@ -88,11 +88,14 @@ export async function handleTextEvent(
       prompt = prompt.substring(activateBotKeyword.length);
       conversationId = source.groupId;
     } else if (source.type === 'user') {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       conversationId = source.userId;
     }
 
-    text = prompt.length <= promtCharLimit ? await openAI(prompt, conversationId) : promptTooLong;
-    response.text = text;
+    if (prompt.length <= promtCharLimit) {
+      const openAIResponse: OpenAIResponse = await openAI(prompt);
+      text = openAIResponse.promptReply;
+    }
 
     // Add to cache.
     promptCache.set(prompt.toLowerCase(), text);

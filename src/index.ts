@@ -6,8 +6,8 @@ import express, { Application } from 'express';
 import { lineMiddlewareConfig } from './configs/configuration';
 import { connectToDatabase } from './database';
 import { PORT } from './configs/environment';
-import { populateCache } from './database/util/cache';
-import { loggerMiddleware } from './database/util/logger';
+import { populateCache } from './util/cache';
+import { loggerMiddleware } from './util/logger';
 import { healthCheck, webhookHandler } from './routes';
 
 export const app: Application = express();
