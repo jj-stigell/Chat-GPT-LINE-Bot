@@ -7,9 +7,9 @@ import { handleEvent } from './eventHandlers';
 
 // Health check endpoint.
 export function healthCheck(req: Request, res: Response, next: NextFunction): void {
-  console.log('ips', req.ips);
-  console.log('sokcet', req.socket.remoteAddress);
-  console.log('ip',req.ip);
+  //console.log('ips', req.ips);
+  //console.log('sokcet', req.socket.remoteAddress);
+  //console.log('ip',req.ip);
   res.status(200).send();
   next();
 }

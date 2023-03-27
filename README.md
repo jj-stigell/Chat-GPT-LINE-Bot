@@ -9,6 +9,7 @@
     * [Group chats](#group-chats)
       * [Group bot workflow](#group-bot-workflow)
     * [Data deletion](#data-deletion)
+  * [Tools](#tools)
 
 
 ## Webhook events
@@ -102,3 +103,13 @@ When user adds the bot to group chat.
 
 Cron job checks every hour user/group deletion request older than 24 hours and deletes all data related to that user or group id.
 
+
+## Tools
+
+* [LINE SDK](https://github.com/line/line-bot-sdk-nodejs) - LINE Messaging API SDK for nodejs
+* [Node-Cache](https://github.com/node-cache/node-cache) - Simple and fast NodeJS internal caching.
+* [Express](https://github.com/expressjs/express) - Fast, unopinionated, minimalist web framework for Node.js.
+* [Typescript](https://github.com/microsoft/TypeScript) - TypeScript is a superset of JavaScript that compiles to clean JavaScript output.
+* [OpenAI-Node](https://github.com/openai/openai-node) - Node.js library for the OpenAI API
+* [Mongoose](https://github.com/Automattic/mongoose) - MongoDB object modeling designed to work in an asynchronous environment.
+* [dotenv](https://github.com/motdotla/dotenv) - Loads environment variables from .env for nodejs projects.
