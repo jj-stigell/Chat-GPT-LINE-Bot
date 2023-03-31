@@ -122,13 +122,22 @@ export async function handleFollowEvent(event: FollowEvent): Promise<MessageAPIR
   const replyToken: string = event.replyToken;
   const user: LineUser = event.source as LineUser;
 
-  console.log('Bot followed by user id:', user.userId);
+  // Check if user exists in db.
+  const userFromDb: IUser | null = await User.findById({ _id: user.userId });
 
-  // Add new user to the db.
-  const newUser: IUser = new User({
-    _id: user.userId
-  });
-  await newUser.save();
+  if (userFromDb) {
+    // Uset the deletion condition.
+    userFromDb.delete = false;
+    await userFromDb.save();
+    console.log('Bot followed by existing user id:', user.userId);
+  } else {
+    // Add new user to the db.
+    const newUser: IUser = new User({
+      _id: user.userId
+    });
+    await newUser.save();
+    console.log('Bot followed by new user id:', user.userId);
+  }
 
   return client.replyMessage(replyToken, userWelcomeMessage);
 }
