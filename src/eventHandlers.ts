@@ -10,7 +10,7 @@ import {
 } from './configs/configuration';
 import { promptCache } from './util/cache';
 import { LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN } from './configs/environment';
-import { openAI, OpenAIResponse } from './openAI';
+import openAI, { OpenAIResponse } from './openAI';
 
 const clientConfig: ClientConfig = {
   channelAccessToken: LINE_CHANNEL_ACCESS_TOKEN,

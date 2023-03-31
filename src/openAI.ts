@@ -19,7 +19,7 @@ export type OpenAIResponse = {
 export default async function openAI(prompt: string): Promise<OpenAIResponse> {
   try {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response: any= await openai.createCompletion({
+    const response: any = await openai.createCompletion({
       model: 'text-davinci-003',
       prompt,
       temperature: 0,
