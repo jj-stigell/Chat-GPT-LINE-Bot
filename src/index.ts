@@ -8,7 +8,7 @@ import { connectToDatabase } from './database';
 import { PORT } from './configs/environment';
 import { populateCache } from './util/cache';
 import { loggerMiddleware } from './util/logger';
-import { healthCheck, webhookHandler } from './routes';
+import { healthCheck, webhookHandler } from './controllers';
 
 export const app: Application = express();
 

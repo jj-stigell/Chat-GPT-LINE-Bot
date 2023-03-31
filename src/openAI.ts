@@ -42,6 +42,7 @@ export async function openAI(prompt: string): Promise<OpenAIResponse> {
     return {
       id: '-',
       promptReply: failMessage,
-      tokensUsed: 0 };
+      tokensUsed: 0
+    };
   }
 }

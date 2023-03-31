@@ -70,7 +70,7 @@ export async function handleTextEvent(
   let prompt: string = message.text;
 
   // Check cache for the user prompt.
-  let text: string | undefined = promptCache.get(prompt.toLowerCase());
+  const text: string | undefined = promptCache.get(prompt.toLowerCase());
 
   const response: TextMessage = {
     type: 'text',
@@ -94,7 +94,7 @@ export async function handleTextEvent(
 
     if (prompt.length <= promtCharLimit) {
       const openAIResponse: OpenAIResponse = await openAI(prompt);
-      text = openAIResponse.promptReply;
+      response.text = openAIResponse.promptReply;
     }
 
     // Add to cache.
