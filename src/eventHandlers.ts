@@ -146,12 +146,15 @@ export async function handleUnfollowEvent(event: UnfollowEvent): Promise<undefin
 
   console.log('Bot unfollowed by user with id:', user.userId);
 
-  // TODO: remove from db, add to delete queue.
-  const userFromDb: IUser | null = await User.findById(user.userId);
-
-  if (userFromDb) {
-    console.log(userFromDb);
-  }
+  // Add user to delete queue.
+  await User.updateOne(
+    { _id: user.userId },
+    {
+      $set: {
+        delete: true,
+        deleteAt: Date.now() + 24 * 60 * 60 * 1000
+      }
+    });
 
   return;
 }
