@@ -1,7 +1,7 @@
 // Modules
 import {
   Client, ClientConfig, FollowEvent, Group, JoinEvent, LeaveEvent,
-  MessageAPIResponseBase, TextMessage, UnfollowEvent, User, EventSource, WebhookEvent, TextEventMessage
+  MessageAPIResponseBase, TextMessage, UnfollowEvent, User as LineUser, EventSource, WebhookEvent, TextEventMessage
 } from '@line/bot-sdk';
 
 // Project imports
@@ -10,7 +10,8 @@ import {
 } from './configs/configuration';
 import { promptCache } from './util/cache';
 import { LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN } from './configs/environment';
-import openAI, { OpenAIResponse } from './openAI';
+import openAI, { OpenAiCustomResponse } from './openAI';
+import User, { IUser } from './database/models/User';
 
 const clientConfig: ClientConfig = {
   channelAccessToken: LINE_CHANNEL_ACCESS_TOKEN,
@@ -93,7 +94,7 @@ export async function handleTextEvent(
     }
 
     if (prompt.length <= promtCharLimit) {
-      const openAIResponse: OpenAIResponse = await openAI(prompt);
+      const openAIResponse: OpenAiCustomResponse = await openAI(prompt);
       response.text = openAIResponse.promptReply;
     }
 
@@ -119,9 +120,16 @@ export async function handleTextEvent(
 export async function handleFollowEvent(event: FollowEvent): Promise<MessageAPIResponseBase> {
   // Extract token and user from the event.
   const replyToken: string = event.replyToken;
-  const user: User = event.source as User;
-  // TODO: add to db.
+  const user: LineUser = event.source as LineUser;
+
   console.log('Bot followed by user id:', user.userId);
+
+  // Add new user to the db.
+  const newUser: IUser = new User({
+    _id: user.userId
+  });
+  await newUser.save();
+
   return client.replyMessage(replyToken, userWelcomeMessage);
 }
 
@@ -134,9 +142,17 @@ export async function handleFollowEvent(event: FollowEvent): Promise<MessageAPIR
 */
 export async function handleUnfollowEvent(event: UnfollowEvent): Promise<undefined> {
   // Extract user from the event.
-  const user: User = event.source as User;
+  const user: LineUser = event.source as LineUser;
+
   console.log('Bot unfollowed by user with id:', user.userId);
+
   // TODO: remove from db, add to delete queue.
+  const userFromDb: IUser | null = await User.findById(user.userId);
+
+  if (userFromDb) {
+    console.log(userFromDb);
+  }
+
   return;
 }
 

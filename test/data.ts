@@ -1,6 +1,7 @@
 import {
   MessageEvent, FollowEvent, UnfollowEvent, JoinEvent, LeaveEvent, WebhookRequestBody
 } from '@line/bot-sdk';
+import { CreateCompletionResponse } from 'openai/dist/api';
 
 // Webhook event object which contains the sent message.
 // https://developers.line.biz/en/reference/messaging-api/#message-event
@@ -125,4 +126,30 @@ export const webhookRequestCollection: WebhookRequestBody = {
     joinEvent,
     leaveEvent
   ]
+};
+
+export const OpenAiData: CreateCompletionResponse = {
+  id: 'id_for_testing_purposes',
+  object: 'text_completion',
+  created: 1680248381,
+  model: 'text-davinci-003',
+  choices: [
+    {
+      text: 'testing OpenAI API',
+      index: 0,
+      logprobs: null,
+      finish_reason: 'stop'
+    },
+    {
+      text: 'should not show up in tests',
+      index: 0,
+      logprobs: null,
+      finish_reason: 'stop'
+    }
+  ],
+  usage: {
+    prompt_tokens: 5,
+    completion_tokens: 10,
+    total_tokens: 15
+  }
 };

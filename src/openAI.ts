@@ -10,13 +10,13 @@ const configuration: Configuration = new Configuration({
 
 const openai: OpenAIApi = new OpenAIApi(configuration);
 
-export type OpenAIResponse = {
+export type OpenAiCustomResponse = {
   id: string;
   promptReply: string;
   tokensUsed: number;
 };
 
-export default async function openAI(prompt: string): Promise<OpenAIResponse> {
+export default async function openAI(prompt: string): Promise<OpenAiCustomResponse> {
   try {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response: any = await openai.createCompletion({
@@ -29,7 +29,6 @@ export default async function openAI(prompt: string): Promise<OpenAIResponse> {
       presence_penalty: 0.0
     });
 
-    console.log('OpenAI response:', response.data);
     console.log('OpenAI response:', response.data.choices[0]);
     const message: string = response.data.choices[0].text.trim();
 

@@ -9,9 +9,9 @@ export interface IUser extends Document {
 
 export const UserSchema: Schema = new Schema<IUser>({
   _id: { type: String, required: true },
-  messagesSent: { type: Number, default: 0 },
-  delete: { type: Boolean, required: true },
-  deleteAt: { type: Date, required: true }
+  messagesSent: { type: Number, required: false, default: 0 },
+  delete: { type: Boolean, required: false, default: false },
+  deleteAt: { type: Date, required: false }
 }, { timestamps: true });
 
 export default mongoose.model<IUser>('User', UserSchema);
