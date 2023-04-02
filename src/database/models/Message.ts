@@ -15,4 +15,6 @@ export const MessageSchema: Schema = new Schema<IMessage>({
   tokensUsed: { type: Number, required: true },
 },  { timestamps: { createdAt: true, updatedAt: false } });
 
+MessageSchema.index({ conversationId: 1, createdAt: 1 });
+
 export default mongoose.model<IMessage>('Message', MessageSchema);

@@ -7,7 +7,8 @@ import {
 
 // Project imports
 import {
-  activateBotKeyword, userWelcomeMessage, groupWelcomeMessage, promtCharLimit, promptTooLong
+  activateBotKeyword, userWelcomeMessage, groupWelcomeMessage,
+  promtCharLimit, promptTooLong, messageLimit, tooManyRequest
 } from './configs/configuration';
 import { LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN } from './configs/environment';
 import Message, { IMessage } from './database/models/Message';
@@ -70,15 +71,29 @@ export async function handleTextEvent(
 
   let conversationId: string = '-';
   let prompt: string = message.text;
+  let openAIResponse: OpenAiCustomResponse | undefined;
 
   const response: TextMessage = {
     type: 'text',
     text: promptTooLong
   };
 
+  // Check for promt limit.
   if (prompt.length > promtCharLimit) {
     return client.replyMessage(replyToken, response);
   }
+
+  const count: number = await Message.countDocuments({
+    conversationId: conversationId,
+    createdAt: { $gte: Date.now() - (24 * 60 * 60 * 1000) },
+  });
+
+  // Check that user message limit not hit.
+  if (count > messageLimit) {
+    response.text = tooManyRequest;
+    return client.replyMessage(replyToken, response);
+  }
+
   // Check cache for the user prompt.
   const text: string | undefined = promptCache.get(prompt.toLowerCase());
 
@@ -97,32 +112,33 @@ export async function handleTextEvent(
       conversationId = source.userId;
     }
 
-    let userFromDb: IUser | null = await User.findById({ _id: conversationId });
-
-    if (!userFromDb) {
-      userFromDb = new User({
-        _id: conversationId,
-        messagesSent: 1
-      });
-      await userFromDb.save();
-    }
-
-    const openAIResponse: OpenAiCustomResponse = await openAI(prompt);
+    openAIResponse = await openAI(prompt);
     response.text = openAIResponse.promptReply;
 
     // Add to cache.
     promptCache.set(prompt.toLowerCase(), text);
-
-    // Log the message.
-    const newMessage: IMessage = new Message({
-      conversationId,
-      message: prompt,
-      aiReply: openAIResponse.promptReply,
-      tokensUsed: openAIResponse.tokensUsed
-
-    });
-    await newMessage.save();
   }
+
+  let userFromDb: IUser | null = await User.findById({ _id: conversationId });
+
+  if (!userFromDb) {
+    userFromDb = new User({
+      _id: conversationId,
+      messagesSent: 1
+    });
+  } else {
+    userFromDb.messagesSent = userFromDb.messagesSent as number + 1;
+  }
+  await userFromDb.save();
+
+  // Log the message.
+  const newMessage: IMessage = new Message({
+    conversationId,
+    message: prompt,
+    aiReply: response.text,
+    tokensUsed: openAIResponse?.tokensUsed ?? 0
+  });
+  await newMessage.save();
 
   return client.replyMessage(replyToken, response);
 }
