@@ -8,12 +8,13 @@ import { connectToDatabase } from './database';
 import { PORT } from './configs/environment';
 import { populateCache } from './util/cache';
 import { loggerMiddleware } from './util/logger';
-import { healthCheck, webhookHandler } from './controllers';
+import { healthCheck, test, webhookHandler } from './controllers';
 
 export const app: Application = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.get('/health', healthCheck);
+app.get('/test/:conversationId', test);
 app.post('/webhook', middleware(lineMiddlewareConfig), webhookHandler);
 app.use(loggerMiddleware());
 

@@ -1,6 +1,7 @@
 // Modules
 import {  WebhookEvent } from '@line/bot-sdk';
 import { NextFunction, Request, Response } from 'express';
+import Message, { IMessage } from './database/models/Message';
 
 // Project imports
 import { handleEvent } from './eventHandlers';
@@ -8,6 +9,24 @@ import { handleEvent } from './eventHandlers';
 // Health check endpoint.
 export function healthCheck(req: Request, res: Response, next: NextFunction): void {
   res.status(200).send();
+  next();
+}
+
+export async function test(req: Request, res: Response, next: NextFunction): Promise<void> {
+  const conversationId: string = req.params.conversationId;
+
+  const count: number = await Message.countDocuments({
+    conversationId,
+    createdAt: { $gte: Date.now() - (24 * 60 * 60 * 1000) },
+  });
+
+  const messages: Array<IMessage> = await Message.find({ conversationId }).sort({ createdAt: 'desc' }).limit(10);
+
+  res.status(200).send({
+    conversationId,
+    count,
+    messages
+  });
   next();
 }
 

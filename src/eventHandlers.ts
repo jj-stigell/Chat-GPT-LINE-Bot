@@ -83,35 +83,35 @@ export async function handleTextEvent(
     return client.replyMessage(replyToken, response);
   }
 
+  if (source.type === 'group') {
+    if (!message.text.toLowerCase().startsWith(activateBotKeyword)) {
+      return;
+    }
+    // Remove the keyword in front of the prompt when in group/multi-person chats.
+    prompt = prompt.substring(activateBotKeyword.length);
+    conversationId = source.groupId;
+  } else if (source.type === 'user') {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    conversationId = source.userId;
+  }
+
+  // Count user/group messages to the bot.
+  const count: number = await Message.countDocuments({
+    conversationId: conversationId,
+    createdAt: { $gte: Date.now() - (24 * 60 * 60 * 1000) },
+  });
+
+  // Check that user message limit not hit.
+  if (count > messageLimit) {
+    response.text = tooManyRequest;
+    return client.replyMessage(replyToken, response);
+  }
+
   // Check cache for the user prompt.
   const text: string | undefined = promptCache.get(prompt.toLowerCase());
 
   if (!text) {
     console.log('No cached prompt found!');
-
-    if (source.type === 'group') {
-      if (!message.text.toLowerCase().startsWith(activateBotKeyword)) {
-        return;
-      }
-      // Remove the keyword in front of the prompt when in group/multi-person chats.
-      prompt = prompt.substring(activateBotKeyword.length);
-      conversationId = source.groupId;
-    } else if (source.type === 'user') {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      conversationId = source.userId;
-    }
-
-    // Count user/group messages to the bot.
-    const count: number = await Message.countDocuments({
-      conversationId: conversationId,
-      createdAt: { $gte: Date.now() - (24 * 60 * 60 * 1000) },
-    });
-
-    // Check that user message limit not hit.
-    if (count > messageLimit) {
-      response.text = tooManyRequest;
-      return client.replyMessage(replyToken, response);
-    }
 
     openAIResponse = await openAI(prompt);
     response.text = openAIResponse.promptReply;
