@@ -16,6 +16,11 @@ export type OpenAiCustomResponse = {
   tokensUsed: number;
 };
 
+/**
+ * Calls the OpenAI API to generate a completion for a given prompt.
+ * @param {string} prompt - The text prompt for which a completion is requested.
+ * @returns {Promise<OpenAiCustomResponse>} - A Promise that resolves to an object of type "OpenAiCustomResponse".
+ */
 export default async function openAI(prompt: string): Promise<OpenAiCustomResponse> {
   try {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

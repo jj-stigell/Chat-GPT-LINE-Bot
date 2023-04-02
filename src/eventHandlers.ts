@@ -1,17 +1,19 @@
 // Modules
 import {
   Client, ClientConfig, FollowEvent, Group, JoinEvent, LeaveEvent,
-  MessageAPIResponseBase, TextMessage, UnfollowEvent, User as LineUser, EventSource, WebhookEvent, TextEventMessage
+  MessageAPIResponseBase, TextMessage, UnfollowEvent, User as LineUser,
+  EventSource, WebhookEvent, TextEventMessage
 } from '@line/bot-sdk';
 
 // Project imports
 import {
   activateBotKeyword, userWelcomeMessage, groupWelcomeMessage, promtCharLimit, promptTooLong
 } from './configs/configuration';
-import { promptCache } from './util/cache';
 import { LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN } from './configs/environment';
-import openAI, { OpenAiCustomResponse } from './openAI';
+import Message, { IMessage } from './database/models/Message';
 import User, { IUser } from './database/models/User';
+import openAI, { OpenAiCustomResponse } from './openAI';
+import { promptCache } from './util/cache';
 
 const clientConfig: ClientConfig = {
   channelAccessToken: LINE_CHANNEL_ACCESS_TOKEN,
@@ -66,17 +68,19 @@ export async function handleTextEvent(
   message: TextEventMessage, replyToken: string, source: EventSource
 ): Promise<MessageAPIResponseBase | undefined> {
 
-  // TODO: add everything to db.
   let conversationId: string = '-';
   let prompt: string = message.text;
 
-  // Check cache for the user prompt.
-  const text: string | undefined = promptCache.get(prompt.toLowerCase());
-
   const response: TextMessage = {
     type: 'text',
-    text: text ?? promptTooLong
+    text: promptTooLong
   };
+
+  if (prompt.length > promtCharLimit) {
+    return client.replyMessage(replyToken, response);
+  }
+  // Check cache for the user prompt.
+  const text: string | undefined = promptCache.get(prompt.toLowerCase());
 
   if (!text) {
     console.log('No cached prompt found!');
@@ -93,19 +97,34 @@ export async function handleTextEvent(
       conversationId = source.userId;
     }
 
-    if (prompt.length <= promtCharLimit) {
-      const openAIResponse: OpenAiCustomResponse = await openAI(prompt);
-      response.text = openAIResponse.promptReply;
+    let userFromDb: IUser | null = await User.findById({ _id: conversationId });
+
+    if (!userFromDb) {
+      userFromDb = new User({
+        _id: conversationId,
+        messagesSent: 1
+      });
+      await userFromDb.save();
     }
+
+    const openAIResponse: OpenAiCustomResponse = await openAI(prompt);
+    response.text = openAIResponse.promptReply;
 
     // Add to cache.
     promptCache.set(prompt.toLowerCase(), text);
 
-    return client.replyMessage(replyToken, response);
-  } else {
-    console.log('Prompt found from cache!');
-    return client.replyMessage(replyToken, response);
+    // Log the message.
+    const newMessage: IMessage = new Message({
+      conversationId,
+      message: prompt,
+      aiReply: openAIResponse.promptReply,
+      tokensUsed: openAIResponse.tokensUsed
+
+    });
+    await newMessage.save();
   }
+
+  return client.replyMessage(replyToken, response);
 }
 
 /**
@@ -163,7 +182,8 @@ export async function handleUnfollowEvent(event: UnfollowEvent): Promise<undefin
         delete: true,
         deleteAt: Date.now() + 24 * 60 * 60 * 1000
       }
-    });
+    }
+  );
 
   return;
 }

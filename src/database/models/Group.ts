@@ -1,3 +1,5 @@
+// NOT IN USE
+
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IGroup extends Document {

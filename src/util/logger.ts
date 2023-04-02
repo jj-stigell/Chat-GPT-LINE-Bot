@@ -20,7 +20,6 @@ export function loggerMiddleware(): (req: Request, res: Response, next: NextFunc
 
     // eslint-disable-next-line max-len
     // Mar 26 12:25:30 AM  IP: ::ffff:127.0.0.1 | Time: 2023-03-25T15:25:30.538Z | Method: POST | Path: /webhook | Status: 404 | Response Time: 3ms
-
     next();
   };
 }

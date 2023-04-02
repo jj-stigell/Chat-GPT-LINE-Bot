@@ -1,3 +1,5 @@
+// NOT IN USE
+
 import { Document, model, Schema } from 'mongoose';
 
 export interface IOpenAIRequest extends Document {
@@ -15,13 +17,3 @@ export const OpenAIRequestSchema: Schema = new Schema<IOpenAIRequest>({
 },  { timestamps: { createdAt: true, updatedAt: false } });
 
 export default model<IOpenAIRequest>('OpenAIRequest', OpenAIRequestSchema);
-
-/*
-const openAIRequest: IOpenAIRequest = new OpenAIRequest({
-  _id: response.data.id,
-  conversationId,
-  message,
-  tokensUsed: Number(response.data.usage.total_tokens)
-});
-await openAIRequest.save();
-*/

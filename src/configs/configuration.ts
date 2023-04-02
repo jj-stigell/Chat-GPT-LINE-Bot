@@ -23,8 +23,14 @@ export const failMessage: string = '回答生成に失敗しました。もう�
 // Max character amount user is allowed to "ask" the bot.
 export const promtCharLimit: number = 100;
 
+// Daily message limit, how many time user is allowed to "ask" questions from the bot.
+export const messageLimit: number = 20;
+
 // Error message in case the prompt is too long.
 export const promptTooLong: string = `${promtCharLimit}文字未満のメッセージしか返信できません`;
+
+// Error message in case user request limit hit.
+export const tooManyRequest: string = `一日に送信できるメッセージは${messageLimit}件までとなっております。この制限は、24時間ごとにリセットされます。ご理解いただき、ありがとうございます。`;
 
 // Keyword to which bot reacts in group and multi-person chats.
 export const activateBotKeyword: string = 'bot';

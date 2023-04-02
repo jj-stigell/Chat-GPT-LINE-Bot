@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-
 import NodeCache, { Options } from 'node-cache';
 
 // Caching options for the messaging webhook prompts.
@@ -27,12 +26,12 @@ const data: Array<Populate> = [
     3. 主菜：鶏の照り焼き、ほうれん草とマッシュルームの炒め物、ごはん
     4. デザート：抹茶アイスクリーム
     
-    上記の献立は、和食と洋食の要素を取り入れたバラエティ豊かなものになっています。もちろん、お好みや食材のアレルギーに応じて変更・調整していただいて構いません。お食事をお楽しみください！`,
+    上記の献立は、和食と洋食の要素を取り入れたバラエティ豊かなものになっています。もちろん、お好みや食材のアレルギーに応じて変更・調整していただいて構いません。お食事をお楽しみください！`
   },
   {
     ttl: 0,
     key: '野球の英訳して下さい。',
-    value: '野球は英語で "baseball" と訳されます。',
+    value: '野球は英語で "baseball" と訳されます。'
   }
 ];
 
