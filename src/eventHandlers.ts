@@ -88,6 +88,8 @@ export async function handleTextEvent(
     createdAt: { $gte: Date.now() - (24 * 60 * 60 * 1000) },
   });
 
+  console.log('messages sent', count);
+
   // Check that user message limit not hit.
   if (count > messageLimit) {
     response.text = tooManyRequest;
