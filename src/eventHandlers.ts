@@ -83,19 +83,6 @@ export async function handleTextEvent(
     return client.replyMessage(replyToken, response);
   }
 
-  const count: number = await Message.countDocuments({
-    conversationId: conversationId,
-    createdAt: { $gte: Date.now() - (24 * 60 * 60 * 1000) },
-  });
-
-  console.log('messages sent', count);
-
-  // Check that user message limit not hit.
-  if (count > messageLimit) {
-    response.text = tooManyRequest;
-    return client.replyMessage(replyToken, response);
-  }
-
   // Check cache for the user prompt.
   const text: string | undefined = promptCache.get(prompt.toLowerCase());
 
@@ -112,6 +99,18 @@ export async function handleTextEvent(
     } else if (source.type === 'user') {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       conversationId = source.userId;
+    }
+
+    // Count user/group messages to the bot.
+    const count: number = await Message.countDocuments({
+      conversationId: conversationId,
+      createdAt: { $gte: Date.now() - (24 * 60 * 60 * 1000) },
+    });
+
+    // Check that user message limit not hit.
+    if (count > messageLimit) {
+      response.text = tooManyRequest;
+      return client.replyMessage(replyToken, response);
     }
 
     openAIResponse = await openAI(prompt);
