@@ -124,6 +124,9 @@ export async function handleTextEvent(
 
     // Add to cache.
     promptCache.set(prompt.toLowerCase(), text);
+  } else {
+    logger.info('Cached hit, previous prompt found!');
+    response.text = text;
   }
 
   let userFromDb: IUser | null = await User.findById({ _id: conversationId });
