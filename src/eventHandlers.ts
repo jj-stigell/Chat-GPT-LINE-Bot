@@ -79,6 +79,8 @@ export async function handleTextEvent(
     text: promptTooLong
   };
 
+  logger.info(`New message event received, payload:"${prompt}", length: ${prompt.length}.`);
+
   // Check for promt limit.
   if (prompt.length > promtCharLimit) {
     return client.replyMessage(replyToken, response);

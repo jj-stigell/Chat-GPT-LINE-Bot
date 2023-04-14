@@ -42,6 +42,7 @@ export async function webhookHandler(req: Request, res: Response, next: NextFunc
   // Process all of the received events asynchronously.
   Promise.all(events.map(handleEvent))
     .then(() => {
+      logger.info('All events processed succesfully!');
       res.status(200).send();
     })
     .catch((err: unknown) => {

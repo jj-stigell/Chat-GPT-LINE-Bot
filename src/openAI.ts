@@ -35,10 +35,9 @@ export default async function openAI(prompt: string): Promise<OpenAiCustomRespon
       presence_penalty: 0.0
     });
 
-    logger.info(`New OpenAI request: ${prompt}.`);
     const promptReply: string = response.data.choices[0].text.trim();
     const tokensUsed: number = Number(response.data.usage.total_tokens);
-    logger.info(`OpenAi response: ${promptReply}, cost: ${tokensUsed} tokens.`);
+    logger.info(`OpenAi RESPONSE: "${promptReply}", COST: ${tokensUsed} tokens.`);
 
     return {
       id: response.data.id,
