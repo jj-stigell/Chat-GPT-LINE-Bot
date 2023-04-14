@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import NodeCache, { Options } from 'node-cache';
 import logger from '../configs/winston';
+import { hashValue } from './hash';
 
 // Caching options for the messaging webhook prompts.
 const nodeCacheOptions: Options = {
@@ -47,4 +48,25 @@ export function populateCache(): void {
     promptCache.set(value.key, value.value, value.ttl);
   });
   logger.info('Cache populated');
+}
+
+/**
+ * Retrieves a value from the cache using the hashed key.
+ * @param {string} key - The key to be hashed and used for retrieval.
+ * @returns {string | undefined} The cached value associated with the
+ * hashed key, or undefined if not found.
+ */
+export function getFromCache(key: string): string | undefined {
+  // Retrieve the value from the cache using the hashed key.
+  return promptCache.get(hashValue(key));
+}
+
+/**
+ * Stores a value in the cache with the hashed key.
+ * @param {string} key - The key to be hashed and used for storage.
+ * @param {string} value - The value to be stored in the cache.
+ */
+export function setToCache(key: string, value: string): void {
+  // Store the value in the cache using the hashed key.
+  promptCache.set(hashValue(key), value);
 }

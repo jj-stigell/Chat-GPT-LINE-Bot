@@ -1,11 +1,12 @@
 // Modules
 import {  WebhookEvent } from '@line/bot-sdk';
 import { NextFunction, Request, Response } from 'express';
-import logger from './configs/winston';
 import Message, { IMessage } from './database/models/Message';
 
 // Project imports
+import logger from './configs/winston';
 import { handleEvent } from './eventHandlers';
+import { hashValue } from './util/hash';
 
 // Health check endpoint.
 export function healthCheck(req: Request, res: Response, next: NextFunction): void {
@@ -14,7 +15,7 @@ export function healthCheck(req: Request, res: Response, next: NextFunction): vo
 }
 
 export async function test(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const conversationId: string = req.params.conversationId;
+  const conversationId: string = req.params.conversationId ?? '-';
 
   const count: number = await Message.countDocuments({
     conversationId,
@@ -27,6 +28,20 @@ export async function test(req: Request, res: Response, next: NextFunction): Pro
     conversationId,
     count,
     messages
+  });
+  next();
+}
+
+export async function testHash(req: Request, res: Response, next: NextFunction): Promise<void> {
+  const message: string = req.params.message ?? '-';
+  const hash: string = hashValue(message);
+  const compare: string = `message takes ${(new TextEncoder().encode(message)).length} bytes,`
+  + `hash takes ${(new TextEncoder().encode(hash)).length} bytes`;
+
+  res.status(200).send({
+    compare,
+    message,
+    hash,
   });
   next();
 }

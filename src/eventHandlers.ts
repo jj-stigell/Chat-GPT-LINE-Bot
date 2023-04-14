@@ -15,7 +15,7 @@ import logger from './configs/winston';
 import Message, { IMessage } from './database/models/Message';
 import User, { IUser } from './database/models/User';
 import openAI, { OpenAiCustomResponse } from './openAI';
-import { promptCache } from './util/cache';
+import { getFromCache, promptCache, setToCache } from './util/cache';
 
 const clientConfig: ClientConfig = {
   channelAccessToken: LINE_CHANNEL_ACCESS_TOKEN,
@@ -113,7 +113,7 @@ export async function handleTextEvent(
   }
 
   // Check cache for the user prompt.
-  const text: string | undefined = promptCache.get(prompt.toLowerCase());
+  const text: string | undefined = getFromCache(prompt);
 
   if (!text) {
     logger.info('No cached prompt found!');
@@ -122,8 +122,8 @@ export async function handleTextEvent(
     response.text = openAIResponse.promptReply;
     tokensUsed = openAIResponse.tokensUsed;
 
-    // Add to cache.
-    promptCache.set(prompt.toLowerCase(), text);
+    // Set to the cache.
+    setToCache(prompt, response.text);
   } else {
     logger.info('Cached hit, previous prompt found!');
     response.text = text;
