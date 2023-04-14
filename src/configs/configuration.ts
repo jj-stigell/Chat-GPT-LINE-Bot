@@ -24,7 +24,7 @@ export const failMessage: string = '回答生成に失敗しました。もう�
 export const promtCharLimit: number = 100;
 
 // Daily message limit, how many time user is allowed to "ask" questions from the bot.
-export const messageLimit: number = 20;
+export const messageLimit: number = 50;
 
 // Error message in case the prompt is too long.
 export const promptTooLong: string = `${promtCharLimit}文字未満のメッセージしか返信できません`;
