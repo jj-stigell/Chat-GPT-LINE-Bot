@@ -7,16 +7,16 @@ import { lineMiddlewareConfig } from './configs/configuration';
 import { connectToDatabase } from './database';
 import { PORT } from './configs/environment';
 import { populateCache } from './util/cache';
-import { loggerMiddleware } from './util/logger';
+import loggerMiddleware from './middleware/loggerMiddleware';
 import { healthCheck, test, webhookHandler } from './controllers';
 
 export const app: Application = express();
 
 app.use(express.urlencoded({ extended: true }));
+app.use(loggerMiddleware);
 app.get('/health', healthCheck);
 app.get('/test/:conversationId', test);
 app.post('/webhook', middleware(lineMiddlewareConfig), webhookHandler);
-app.use(loggerMiddleware());
 
 app.listen(PORT, async function () {
   populateCache();

@@ -2,6 +2,7 @@ import { Configuration, OpenAIApi } from 'openai';
 
 import { failMessage } from './configs/configuration';
 import { OPENAI_API_KEY, OPENAI_ORGANIZATION } from './configs/environment';
+import logger from './configs/winston';
 
 const configuration: Configuration = new Configuration({
   apiKey: OPENAI_API_KEY,
@@ -11,7 +12,7 @@ const configuration: Configuration = new Configuration({
 const openai: OpenAIApi = new OpenAIApi(configuration);
 
 export type OpenAiCustomResponse = {
-  id: string;
+  id?: string;
   promptReply: string;
   tokensUsed: number;
 };
@@ -43,9 +44,9 @@ export default async function openAI(prompt: string): Promise<OpenAiCustomRespon
       tokensUsed: Number(response.data.usage.total_tokens)
     };
   } catch (error: unknown) {
-    console.log('OpenAI query failed, error:', error);
+    logger.error(`OpenAI query failed, error: ${error}`);
     return {
-      id: '-',
+      id: undefined,
       promptReply: failMessage,
       tokensUsed: 0
     };

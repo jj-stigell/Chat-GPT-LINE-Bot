@@ -11,6 +11,7 @@ import {
   promtCharLimit, promptTooLong, messageLimit, tooManyRequest
 } from './configs/configuration';
 import { LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN } from './configs/environment';
+import logger from './configs/winston';
 import Message, { IMessage } from './database/models/Message';
 import User, { IUser } from './database/models/User';
 import openAI, { OpenAiCustomResponse } from './openAI';
@@ -36,7 +37,7 @@ export function handleEvent(event: WebhookEvent): Promise<MessageAPIResponseBase
     case 'text':
       return handleTextEvent(event.message, event.replyToken, event.source);
     default:
-      console.log(`Unsupported event type: ${event.message.type}`);
+      logger.warn(`Unsupported event type: ${event.message.type}`);
       return Promise.resolve(undefined);
     }
   case 'follow':
@@ -48,7 +49,7 @@ export function handleEvent(event: WebhookEvent): Promise<MessageAPIResponseBase
   case 'leave':
     return handleLeaveEvent(event);
   default:
-    console.log(`Unsupported event type: ${event.type}`);
+    logger.warn(`Unsupported event type: ${event.type}`);
     return Promise.resolve(undefined);
   }
 }
@@ -71,7 +72,7 @@ export async function handleTextEvent(
 
   let conversationId: string = '-';
   let prompt: string = message.text;
-  let openAIResponse: OpenAiCustomResponse | undefined;
+  let tokensUsed: number = 0;
 
   const response: TextMessage = {
     type: 'text',
@@ -98,7 +99,9 @@ export async function handleTextEvent(
   // Count user/group messages to the bot.
   const count: number = await Message.countDocuments({
     conversationId: conversationId,
-    createdAt: { $gte: Date.now() - (24 * 60 * 60 * 1000) },
+    createdAt: {
+      $gte: Date.now() - (24 * 60 * 60 * 1000)
+    }
   });
 
   // Check that user message limit not hit.
@@ -111,10 +114,11 @@ export async function handleTextEvent(
   const text: string | undefined = promptCache.get(prompt.toLowerCase());
 
   if (!text) {
-    console.log('No cached prompt found!');
+    logger.info('No cached prompt found!');
 
-    openAIResponse = await openAI(prompt);
+    const openAIResponse: OpenAiCustomResponse = await openAI(prompt);
     response.text = openAIResponse.promptReply;
+    tokensUsed = openAIResponse.tokensUsed;
 
     // Add to cache.
     promptCache.set(prompt.toLowerCase(), text);
@@ -137,7 +141,7 @@ export async function handleTextEvent(
     conversationId,
     message: prompt,
     aiReply: response.text,
-    tokensUsed: openAIResponse?.tokensUsed ?? 0
+    tokensUsed
   });
   await newMessage.save();
 
@@ -165,14 +169,14 @@ export async function handleFollowEvent(event: FollowEvent): Promise<MessageAPIR
     // Uset the deletion condition.
     userFromDb.delete = false;
     await userFromDb.save();
-    console.log('Bot followed by existing user id:', user.userId);
+    logger.info(`Bot followed by existing user id: ${user.userId}`);
   } else {
     // Add new user to the db.
     const newUser: IUser = new User({
       _id: user.userId
     });
     await newUser.save();
-    console.log('Bot followed by new user id:', user.userId);
+    logger.info(`Bot followed by new user id: ${user.userId}`);
   }
 
   return client.replyMessage(replyToken, userWelcomeMessage);
@@ -189,8 +193,6 @@ export async function handleUnfollowEvent(event: UnfollowEvent): Promise<undefin
   // Extract user from the event.
   const user: LineUser = event.source as LineUser;
 
-  console.log('Bot unfollowed by user with id:', user.userId);
-
   // Add user to delete queue.
   await User.updateOne(
     { _id: user.userId },
@@ -201,6 +203,7 @@ export async function handleUnfollowEvent(event: UnfollowEvent): Promise<undefin
       }
     }
   );
+  logger.info(`Bot unfollowed by user id: ${user.userId}`);
 
   return;
 }
@@ -219,7 +222,7 @@ export async function handleJoinEvent(event: JoinEvent): Promise<MessageAPIRespo
   const replyToken: string = event.replyToken;
   const group: Group = event.source as Group;
   // TODO: add to db.
-  console.log('Bot joined to group id:', group.groupId);
+  logger.info(`Bot joined to group id: ${group.groupId}`);
   return client.replyMessage(replyToken, groupWelcomeMessage);
 }
 
@@ -233,7 +236,7 @@ export async function handleJoinEvent(event: JoinEvent): Promise<MessageAPIRespo
 export async function handleLeaveEvent(event: LeaveEvent): Promise<undefined> {
   const source: Group = event.source as Group;
   const groupId: string = source.groupId;
-  console.log('Bot leaving from group id:', groupId);
+  logger.info(`Bot leaving from group id: ${groupId}`);
   // TODO: remove from db, add to delete queue.
   return;
 }

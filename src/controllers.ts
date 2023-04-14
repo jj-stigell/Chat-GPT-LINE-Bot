@@ -1,6 +1,7 @@
 // Modules
 import {  WebhookEvent } from '@line/bot-sdk';
 import { NextFunction, Request, Response } from 'express';
+import logger from './configs/winston';
 import Message, { IMessage } from './database/models/Message';
 
 // Project imports
@@ -36,7 +37,7 @@ export async function webhookHandler(req: Request, res: Response, next: NextFunc
     next();
   }
   const events: Array<WebhookEvent> = req.body.events;
-  console.log('LINE events:', events);
+  logger.info(`${events.length} new LINE events: ${events}`);
 
   // Process all of the received events asynchronously.
   Promise.all(events.map(handleEvent))
@@ -44,7 +45,11 @@ export async function webhookHandler(req: Request, res: Response, next: NextFunc
       res.status(200).send();
     })
     .catch((err: unknown) => {
-      console.error(err);
+      if (err instanceof Error) {
+        logger.error(err.message);
+      } else {
+        logger.error(err);
+      }
       res.status(500).end();
     });
   next();

@@ -23,11 +23,14 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "mongoose": "^7.0.2",
+    "morgan": "^1.10.0",
     "node-cache": "^5.1.2",
     "openai": "^3.2.1",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
+    "@types/morgan": "^1.9.4",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "eslint": "^8.27.0",

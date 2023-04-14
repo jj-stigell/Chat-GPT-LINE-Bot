@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import NodeCache, { Options } from 'node-cache';
+import logger from '../configs/winston';
 
 // Caching options for the messaging webhook prompts.
 const nodeCacheOptions: Options = {
@@ -45,5 +46,5 @@ export function populateCache(): void {
   data.map((value: Populate) => {
     promptCache.set(value.key, value.value, value.ttl);
   });
-  console.log('Cache populated');
+  logger.info('Cache populated');
 }
