@@ -15,7 +15,7 @@ import logger from './configs/winston';
 import Message, { IMessage } from './database/models/Message';
 import User, { IUser } from './database/models/User';
 import openAI, { OpenAiCustomResponse } from './openAI';
-import { getFromCache, promptCache, setToCache } from './util/cache';
+import { getFromCache, setToCache } from './util/cache';
 
 const clientConfig: ClientConfig = {
   channelAccessToken: LINE_CHANNEL_ACCESS_TOKEN,
