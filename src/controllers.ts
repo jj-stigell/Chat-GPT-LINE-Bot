@@ -1,18 +1,12 @@
 // Modules
-import {  WebhookEvent } from '@line/bot-sdk';
+// import {  WebhookEvent } from '@line/bot-sdk';
 import { NextFunction, Request, Response } from 'express';
 import Message, { IMessage } from './database/models/Message';
 
 // Project imports
-import logger from './configs/winston';
-import { handleEvent } from './util/eventHandlers';
+// import logger from './configs/winston';
+// import { handleEvent } from './util/eventHandlers';
 import { hashValue } from './util/hash';
-
-// Health check endpoint.
-export function healthCheck(req: Request, res: Response, next: NextFunction): void {
-  res.status(200).send();
-  next();
-}
 
 export async function test(req: Request, res: Response, next: NextFunction): Promise<void> {
   const conversationId: string = req.params.conversationId ?? '-';
@@ -46,6 +40,7 @@ export async function testHash(req: Request, res: Response, next: NextFunction):
   next();
 }
 
+/*
 export async function webhookHandler(req: Request, res: Response, next: NextFunction): Promise<void> {
   if (!Array.isArray(req.body.events)) {
     res.status(500).end();
@@ -70,3 +65,4 @@ export async function webhookHandler(req: Request, res: Response, next: NextFunc
     });
   next();
 }
+*/
