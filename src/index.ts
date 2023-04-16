@@ -8,7 +8,7 @@ import { connectToDatabase } from './database';
 import { NODE_ENV, PORT } from './configs/environment';
 import { populateCache } from './util/cache';
 import loggerMiddleware from './middleware/loggerMiddleware';
-import { testGetUser, testHash } from './devControllers';
+import { testGetUser, testHash } from './controllers.dev';
 import logger from './configs/winston';
 import { handleEvent } from './util/eventHandlers';
 
@@ -48,8 +48,9 @@ app.post(
           logger.error(err);
         }
         res.status(500).end();
+      }).finally(() => {
+        next();
       });
-    next();
   }
 );
 
@@ -60,6 +61,6 @@ if (NODE_ENV === 'development') {
 
 app.listen(PORT, async function () {
   populateCache();
-  connectToDatabase();
-  logger.info(`LINE bot started on PORT: ${PORT} 🤖`);
+  await connectToDatabase();
+  logger.info(`LINE AI bot running on PORT: ${PORT} 🤖`);
 });

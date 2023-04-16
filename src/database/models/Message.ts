@@ -1,8 +1,9 @@
+// Modules
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IMessage extends Document {
   _id: string;
-  conversationId: string;
+  conversationId: string; // Either user id or group id.
   message: string;
   aiReply: string;
   tokensUsed: number;

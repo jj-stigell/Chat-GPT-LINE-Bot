@@ -1,5 +1,7 @@
+// Modules
 import mongoose, { ConnectOptions } from 'mongoose';
 
+// Project imports
 import { MONGODB_URI } from '../configs/environment';
 import logger from '../configs/winston';
 

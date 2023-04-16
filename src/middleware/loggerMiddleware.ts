@@ -1,11 +1,13 @@
+// Modules
 import { RequestHandler } from 'express';
 import morgan from 'morgan';
 
+// Project imports
 import logger from '../configs/winston';
 
 // Logs incoming requests and their responses using Winston logger.
 const loggerMiddleware: RequestHandler = morgan(
-  'Method: :method Path: :url Status: :status Content-length: :res[content-length] - response time: :response-time ms',
+  'Method: :method: :url Status: :status Content-length: :res[content-length] - response time: :response-time ms',
   {
     stream: {
       write: (message: string) => logger.http(message.trim())

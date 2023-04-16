@@ -1,5 +1,7 @@
+// Modules
 import { Configuration, OpenAIApi } from 'openai';
 
+// Project imports
 import { failMessage } from '../configs/configuration';
 import { OPENAI_API_KEY, OPENAI_ORGANIZATION } from '../configs/environment';
 import logger from '../configs/winston';

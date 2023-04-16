@@ -1,5 +1,8 @@
 /* eslint-disable max-len */
+// Modules
 import NodeCache, { Options } from 'node-cache';
+
+// Project imports
 import logger from '../configs/winston';
 import { hashValue } from './hash';
 
@@ -47,7 +50,7 @@ export function populateCache(): void {
   data.map((value: Populate) => {
     promptCache.set(value.key, value.value, value.ttl);
   });
-  logger.info('Cache populated');
+  logger.info('Cache populated.');
 }
 
 /**

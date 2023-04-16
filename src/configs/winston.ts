@@ -1,5 +1,7 @@
+// Modules
 import winston from 'winston';
 
+// Project imports
 import { NODE_ENV } from './environment';
 
 const levels: winston.config.AbstractConfigSetLevels = {

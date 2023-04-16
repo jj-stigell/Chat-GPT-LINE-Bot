@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 // Modules
 import { MiddlewareConfig, QuickReplyItem, TextMessage } from '@line/bot-sdk';
 
@@ -30,7 +29,8 @@ export const messageLimit: number = 50;
 export const promptTooLong: string = `${promtCharLimit}文字未満のメッセージしか返信できません`;
 
 // Error message in case user request limit hit.
-export const tooManyRequest: string = `一日に送信できるメッセージは${messageLimit}件までとなっております。この制限は、24時間ごとにリセットされます。ご理解いただき、ありがとうございます。`;
+export const tooManyRequest: string =
+`一日に送信できるメッセージは${messageLimit}件までとなっております。この制限は、24時間ごとにリセットされます。ご理解いただき、ありがとうございます。`;
 
 // Keyword to which bot reacts in group and multi-person chats.
 export const activateBotKeyword: string = 'bot';
@@ -102,6 +102,7 @@ const translationExampleGroup: QuickReplyItem = {
 // Default message for 1-on-1 chat.
 export const userWelcomeMessage: TextMessage = {
   type: 'text',
+  // eslint-disable-next-line max-len
   text: `チャットボットをご利用いただきありがとうございます！私とのチャットを始める前に、プライバシーポリシーと利用規約をお読みください。最大の質問の長さは${promtCharLimit}文字です。私には何でもお聞きいただけます。以下は、よく受け取る一般的な質問です。`,
   quickReply: {
     items: [
@@ -117,6 +118,7 @@ export const userWelcomeMessage: TextMessage = {
 // Default message for group and multi-person chats.
 export const groupWelcomeMessage: TextMessage = {
   type: 'text',
+  // eslint-disable-next-line max-len
   text: `皆さん、こんにちは！チャットボットをご利用いただきありがとうございます！私とのチャットを始める前に、プライバシーポリシーと利用規約をお読みください。最大の質問の長さは${promtCharLimit}文字です。私には何でもお聞きいただけます。メッセージの最初に「${activateBotKeyword}」というキーワードを含めると、ボットに質問することができます。以下は、よく受け取る一般的な質問です。`,
   quickReply: {
     items: [
