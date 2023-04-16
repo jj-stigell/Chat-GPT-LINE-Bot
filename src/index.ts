@@ -5,10 +5,10 @@ import express, { Application, NextFunction, Request, Response } from 'express';
 // Project imports
 import { lineMiddlewareConfig } from './configs/configuration';
 import { connectToDatabase } from './database';
-import { PORT } from './configs/environment';
+import { NODE_ENV, PORT } from './configs/environment';
 import { populateCache } from './util/cache';
 import loggerMiddleware from './middleware/loggerMiddleware';
-import { test, testHash } from './controllers';
+import { testGetUser, testHash } from './devControllers';
 import logger from './configs/winston';
 import { handleEvent } from './util/eventHandlers';
 
@@ -23,10 +23,6 @@ app.get('/health', (_req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-// DELETE before release.
-app.get('/test/:conversationId', test);
-app.get('/test/hash/:message', testHash);
-
 // Handle LINE webhook calls.
 app.post(
   '/webhook',
@@ -37,7 +33,7 @@ app.post(
       next();
     }
     const events: Array<WebhookEvent> = req.body.events;
-    logger.info(`${events.length} new LINE events: ${events}`);
+    logger.info(`${events.length} new LINE event(s) received.`);
 
     // Process all of the received events asynchronously.
     Promise.all(events.map(handleEvent))
@@ -56,6 +52,11 @@ app.post(
     next();
   }
 );
+
+if (NODE_ENV === 'development') {
+  app.get('/test/:conversationId', testGetUser);
+  app.post('/test/hash', express.json(), testHash);
+}
 
 app.listen(PORT, async function () {
   populateCache();
