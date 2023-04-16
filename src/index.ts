@@ -9,6 +9,7 @@ import { PORT } from './configs/environment';
 import { populateCache } from './util/cache';
 import loggerMiddleware from './middleware/loggerMiddleware';
 import { healthCheck, test, testHash, webhookHandler } from './controllers';
+import logger from './configs/winston';
 
 export const app: Application = express();
 
@@ -22,5 +23,5 @@ app.post('/webhook', middleware(lineMiddlewareConfig), webhookHandler);
 app.listen(PORT, async function () {
   populateCache();
   connectToDatabase();
-  console.log(`LINE bot started on PORT: ${PORT} 🤖`);
+  logger.info(`LINE bot started on PORT: ${PORT} 🤖`);
 });

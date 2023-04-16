@@ -6,16 +6,16 @@ import {
 } from '@line/bot-sdk';
 
 // Project imports
+import { getFromCache, setToCache } from './cache';
 import {
   activateBotKeyword, userWelcomeMessage, groupWelcomeMessage,
   promtCharLimit, promptTooLong, messageLimit, tooManyRequest
-} from './configs/configuration';
-import { LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN } from './configs/environment';
-import logger from './configs/winston';
-import Message, { IMessage } from './database/models/Message';
-import User, { IUser } from './database/models/User';
+} from '../configs/configuration';
+import { LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN } from '../configs/environment';
+import logger from '../configs/winston';
+import Message, { IMessage } from '../database/models/Message';
+import User, { IUser } from '../database/models/User';
 import openAI, { OpenAiCustomResponse } from './openAI';
-import { getFromCache, setToCache } from './util/cache';
 
 const clientConfig: ClientConfig = {
   channelAccessToken: LINE_CHANNEL_ACCESS_TOKEN,
@@ -168,7 +168,9 @@ export async function handleFollowEvent(event: FollowEvent): Promise<MessageAPIR
   const user: LineUser = event.source as LineUser;
 
   // Check if user exists in db.
-  const userFromDb: IUser | null = await User.findById({ _id: user.userId });
+  const userFromDb: IUser | null = await User.findById({
+    _id: user.userId
+  });
 
   if (userFromDb) {
     // Uset the deletion condition.

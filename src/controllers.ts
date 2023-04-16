@@ -5,7 +5,7 @@ import Message, { IMessage } from './database/models/Message';
 
 // Project imports
 import logger from './configs/winston';
-import { handleEvent } from './eventHandlers';
+import { handleEvent } from './util/eventHandlers';
 import { hashValue } from './util/hash';
 
 // Health check endpoint.

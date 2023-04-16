@@ -6,7 +6,7 @@ on:
 
 jobs:
   health_check:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - name: Check the deployed service is healthy
       uses: jtalk/url-health-check-action@v2

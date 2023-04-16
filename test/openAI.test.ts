@@ -1,7 +1,7 @@
 import axios, { AxiosStatic } from 'axios';
 
 import { OpenAiData } from './data';
-import openAI, { OpenAiCustomResponse } from '../src/openAI';
+import openAI, { OpenAiCustomResponse } from '../src/util/openAI';
 
 jest.mock('axios');
 const mockedAxios: jest.Mocked<AxiosStatic> = axios as jest.Mocked<typeof axios>;

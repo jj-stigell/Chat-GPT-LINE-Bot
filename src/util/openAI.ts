@@ -1,8 +1,8 @@
 import { Configuration, OpenAIApi } from 'openai';
 
-import { failMessage } from './configs/configuration';
-import { OPENAI_API_KEY, OPENAI_ORGANIZATION } from './configs/environment';
-import logger from './configs/winston';
+import { failMessage } from '../configs/configuration';
+import { OPENAI_API_KEY, OPENAI_ORGANIZATION } from '../configs/environment';
+import logger from '../configs/winston';
 
 const configuration: Configuration = new Configuration({
   apiKey: OPENAI_API_KEY,
