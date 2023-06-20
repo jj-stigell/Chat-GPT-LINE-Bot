@@ -36,68 +36,64 @@ export const tooManyRequest: string =
 export const activateBotKeyword: string = 'bot';
 
 // Quickreply menu sent in with the first message after follow or join event.
-const shareWithFriend: QuickReplyItem = {
-  type: 'action',
-  action: {
-    type: 'uri',
-    label: '友達に勧める',
-    uri: 'https://line.me/R/nv/recommendOA/@linedevelopers'
+const items: Array<QuickReplyItem> = [
+  {
+    type: 'action',
+    action: {
+      type: 'uri',
+      label: '友達に勧める',
+      uri: 'https://line.me/R/nv/recommendOA/@linedevelopers'
+    },
+  },
+  {
+    type: 'action',
+    action: {
+      type: 'uri',
+      label: '利用規約',
+      uri: tosUrl
+    }
+  },
+  {
+    type: 'action',
+    action: {
+      type: 'uri',
+      label: '使い方',
+      uri: howToUseUrl
+    }
+  },
+  {
+    type: 'action',
+    action: {
+      type: 'message',
+      label: '今夜の献立',
+      text: '今夜の献立教えて下さい。'
+    }
+  },
+  {
+    type: 'action',
+    action: {
+      type: 'message',
+      label: '今夜の献立',
+      text: 'bot 今夜の献立教えて下さい。'
+    }
+  },
+  {
+    type: 'action',
+    action: {
+      type: 'message',
+      label: '野球の英訳',
+      text: '野球の英訳して下さい。'
+    }
+  },
+  {
+    type: 'action',
+    action: {
+      type: 'message',
+      label: '野球の英訳',
+      text: 'bot 野球の英訳して下さい。'
+    }
   }
-};
-
-const tos: QuickReplyItem = {
-  type: 'action',
-  action: {
-    type: 'uri',
-    label: '利用規約',
-    uri: tosUrl
-  }
-};
-
-const howToUse: QuickReplyItem = {
-  type: 'action',
-  action: {
-    type: 'uri',
-    label: '使い方',
-    uri: howToUseUrl
-  }
-};
-
-const tonightsMenuUser: QuickReplyItem = {
-  type: 'action',
-  action: {
-    type: 'message',
-    label: '今夜の献立',
-    text: '今夜の献立教えて下さい。'
-  }
-};
-
-const tonightsMenuGroup: QuickReplyItem = {
-  type: 'action',
-  action: {
-    type: 'message',
-    label: '今夜の献立',
-    text: 'bot 今夜の献立教えて下さい。'
-  }
-};
-
-const translationExampleUser: QuickReplyItem = {
-  type: 'action',
-  action: {
-    type: 'message',
-    label: '野球の英訳',
-    text: '野球の英訳して下さい。'
-  }
-};
-
-const translationExampleGroup: QuickReplyItem = {
-  type: 'action',
-  action: {
-    type: 'message',
-    label: '野球の英訳',
-    text: 'bot 野球の英訳して下さい。'
-  }
-};
+];
 
 // Default message for 1-on-1 chat.
 export const userWelcomeMessage: TextMessage = {
@@ -105,13 +101,7 @@ export const userWelcomeMessage: TextMessage = {
   // eslint-disable-next-line max-len
   text: `チャットボットをご利用いただきありがとうございます！私とのチャットを始める前に、プライバシーポリシーと利用規約をお読みください。最大の質問の長さは${promtCharLimit}文字です。私には何でもお聞きいただけます。以下は、よく受け取る一般的な質問です。`,
   quickReply: {
-    items: [
-      howToUse,
-      tonightsMenuUser,
-      translationExampleUser,
-      shareWithFriend,
-      tos
-    ]
+    items
   }
 };
 
@@ -121,12 +111,6 @@ export const groupWelcomeMessage: TextMessage = {
   // eslint-disable-next-line max-len
   text: `皆さん、こんにちは！チャットボットをご利用いただきありがとうございます！私とのチャットを始める前に、プライバシーポリシーと利用規約をお読みください。最大の質問の長さは${promtCharLimit}文字です。私には何でもお聞きいただけます。メッセージの最初に「${activateBotKeyword}」というキーワードを含めると、ボットに質問することができます。以下は、よく受け取る一般的な質問です。`,
   quickReply: {
-    items: [
-      howToUse,
-      tonightsMenuGroup,
-      translationExampleGroup,
-      shareWithFriend,
-      tos
-    ]
+    items
   }
 };

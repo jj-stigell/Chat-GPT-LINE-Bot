@@ -3,7 +3,7 @@ import { Configuration, OpenAIApi } from 'openai';
 
 // Project imports
 import { failMessage } from '../configs/configuration';
-import { OPENAI_API_KEY, OPENAI_ORGANIZATION } from '../configs/environment';
+import { CHATGTP_MODEL, OPENAI_API_KEY, OPENAI_ORGANIZATION } from '../configs/environment';
 import logger from '../configs/winston';
 
 const configuration: Configuration = new Configuration({
@@ -28,7 +28,7 @@ export default async function openAI(prompt: string): Promise<OpenAiCustomRespon
   try {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response: any = await openai.createCompletion({
-      model: 'text-davinci-003',
+      model: CHATGTP_MODEL,
       prompt,
       temperature: 0,
       max_tokens: 200,

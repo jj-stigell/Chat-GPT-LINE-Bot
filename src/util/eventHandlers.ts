@@ -199,19 +199,8 @@ export async function handleFollowEvent(event: FollowEvent): Promise<MessageAPIR
 export async function handleUnfollowEvent(event: UnfollowEvent): Promise<undefined> {
   // Extract user from the event.
   const user: LineUser = event.source as LineUser;
-
-  // Add user to delete queue.
-  await User.updateOne(
-    { _id: user.userId },
-    {
-      $set: {
-        delete: true,
-        deleteAt: Date.now() + 24 * 60 * 60 * 1000
-      }
-    }
-  );
+  await User.deleteOne({ _id: user.userId });
   logger.info(`Bot unfollowed by user id: ${user.userId}`);
-
   return;
 }
 

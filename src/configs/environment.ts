@@ -8,6 +8,7 @@ export const LINE_CHANNEL_ACCESS_TOKEN: string = process.env.LINE_CHANNEL_ACCESS
 export const LINE_CHANNEL_SECRET: string = process.env.LINE_CHANNEL_SECRET ?? '';
 export const OPENAI_API_KEY: string | undefined = process.env.OPENAI_API_KEY;
 export const OPENAI_ORGANIZATION: string | undefined = process.env.OPENAI_ORGANIZATION;
+export const CHATGTP_MODEL: string = process.env.CHATGTP_MODEL ?? 'text-davinci-003';
 export const MONGODB_URI: string = process.env.MONGODB_URI ?? '';
 
 if (LINE_CHANNEL_ACCESS_TOKEN.length === 0) {

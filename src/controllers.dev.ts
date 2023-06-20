@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import Message, { IMessage } from './database/models/Message';
 
 // Project imports
-import { hashValue } from './util/hash';
+import { hashValue } from './util/cache';
 
 export async function testGetUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   const conversationId: string = req.params.conversationId ?? '-';
