@@ -43,10 +43,12 @@
 このガイドでは、LINEボットアカウントのセットアップ方法やwebhookイベントの取り扱い方を学びます。
 また、データの削除の手順や、ボットを作成しデプロイするために必要なツールについても説明します。
 
-<p align="center" style="margin-top: 20px; font-size: 30px;">
+<p align="center" style="margin-top: 30px; font-size: 30px;">
   LINE上でボットを試すためにスキャンしてください
   <br>
-  <img src="./landing_page/img/qr-code.png" alt="QR-code-for-demo" width="20%" style="margin-bottom: 50px;" />
+  <a href="https://lin.ee/IU6MaBT">
+    <img src="./landing_page/img/qr-code.png" alt="QR-code-for-demo" width="20%" style="margin-bottom: 50px;" />
+  </a>
 </p>
 
 ## デプロイ
@@ -190,10 +192,12 @@ deploy your own LINE ChatGTP bot. The bot can be currently used in 1-on-1 chats,
 In this guide, you will learn how to set up your LINE bot account, handle webhook events.
 We'll also walk you through the process of data deletion and cover the tools required to build and deploy your bot.
 
-<p align="center" style="margin-top: 20px; font-size: 30px;">
+<p align="center" style="margin-top: 30px; font-size: 30px;">
   Scan to try the bot on LINE
   <br>
-  <img src="./landing_page/img/qr-code.png" alt="QR-code-for-demo" width="20%" style="margin-bottom: 50px;" />
+  <a href="https://lin.ee/IU6MaBT">
+    <img src="./landing_page/img/qr-code.png" alt="QR-code-for-demo" width="20%" style="margin-bottom: 50px;" />
+  </a>
 </p>
 
 ## Deploying and using AI bot
