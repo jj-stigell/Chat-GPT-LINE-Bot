@@ -1,6 +1,6 @@
-**English instructions [here](#chatgtp-line-bot)**
+**English instructions [here](#chat-gpt-line-bot)**
 
-# ChatGTP LINEボット
+# Chat-GPT LINEボット
 
 ## 目次
   * [免責事項](#免責事項)
@@ -37,7 +37,7 @@
 
 ## はじめに
 
-このドキュメンテーションは、あなた自身のLINE ChatGTPボットを作成しデプロイするための必要な情報を提供することを目指しています。
+このドキュメンテーションは、あなた自身のLINE ChatGPTボットを作成しデプロイするための必要な情報を提供することを目指しています。
 現時点では、ボットは1対1のチャットで使用することができます。グループチャットはまだ実装されていません。
 
 このガイドでは、LINEボットアカウントのセットアップ方法やwebhookイベントの取り扱い方を学びます。
@@ -139,7 +139,7 @@
 
 <hr>
 
-# ChatGTP LINE Bot
+# Chat-GPT LINE Bot
 
 ## Table of Contents
   * [DISCLAIMER](#disclaimer)
@@ -187,7 +187,7 @@ including but not limited to, the use, deployment, or testing of this bot.
 ## Introduction
 
 This documentation aims to provide you with the necessary information to create and
-deploy your own LINE ChatGTP bot. The bot can be currently used in 1-on-1 chats, group chats are not implemented yet.
+deploy your own LINE Chat-GPT bot. The bot can be currently used in 1-on-1 chats, group chats are not implemented yet.
 
 In this guide, you will learn how to set up your LINE bot account, handle webhook events.
 We'll also walk you through the process of data deletion and cover the tools required to build and deploy your bot.
